@@ -1,0 +1,55 @@
+# Internal planning docs (schema discovery, phase notes, migration proposals) —
+# kept local only, not pushed to GitHub.
+/docs/
+
+# AI coding agent instruction files — local dev aid only, not for the pushed
+# repo. AGENTS.md is regenerated automatically by `next dev`, so removing it
+# from git has no effect on local development.
+/AGENTS.md
+/CLAUDE.md
+
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Next.js
+.next/
+out/
+build/
+dist/
+
+# Environment variables (never commit real secrets)
+.env
+.env.local
+.env.*.local
+
+# Supabase local dev
+.supabase/
+supabase/.temp/
+
+# Testing
+coverage/
+playwright-report/
+test-results/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+
+# Vercel / certs
+.vercel
+*.pem
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
