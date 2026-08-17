@@ -8,7 +8,19 @@ import { NextResponse, type NextRequest } from "next/server";
 // JWT carry a panel_role claim?). Real authorization happens in Server
 // Actions/Server Components via the DAL (src/lib/auth/session.ts) and in RLS
 // — never trust this layer alone. See docs/module-mapping.md section 4.
-const PUBLIC_ROUTES = ["/login"];
+// /reset-password IS public: it lands with `?code=...` from Supabase's
+// recovery email, and the exchange that turns that into a real session
+// happens inside the page component itself (see reset-password/page.tsx) —
+// this check runs before that, so it can't see a session yet either way.
+// See requestPasswordReset in src/lib/auth/actions.ts.
+const PUBLIC_ROUTES = ["/login", "/forgot-password", "/reset-password"];
+
+// /reset-password must render even if the browser already carries an
+// unrelated valid session (e.g. an admin resetting their password from a
+// second tab that's still logged in) — excluded from the "already logged
+// in, bounce away from public routes" redirect below, unlike every other
+// public route.
+const ALWAYS_RUNS = ["/reset-password"];
 
 export async function proxy(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request });
@@ -59,7 +71,9 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (claims?.panel_role && isPublicRoute) {
+  const alwaysRuns = ALWAYS_RUNS.some((route) => pathname.startsWith(route));
+
+  if (claims?.panel_role && isPublicRoute && !alwaysRuns) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
     return NextResponse.redirect(url);

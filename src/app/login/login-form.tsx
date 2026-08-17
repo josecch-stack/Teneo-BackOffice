@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { login, type LoginState } from "@/lib/auth/actions";
 import { Button } from "@/components/ui/button";
@@ -32,6 +33,13 @@ export function LoginForm() {
             disabled={pending}
           />
         </div>
+
+        <Link
+          href="/forgot-password"
+          className="text-primary -mt-2 self-end text-sm font-semibold"
+        >
+          ¿Olvidaste tu contraseña?
+        </Link>
 
         {state?.error && (
           <p className="text-destructive text-sm" role="alert">
