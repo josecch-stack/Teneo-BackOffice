@@ -114,7 +114,7 @@ export function ClinicalNoteForm({
     <form action={formAction} className="flex max-w-2xl flex-col gap-6">
       <PetPicker initialPet={note?.pets} disabled={pending} />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="event_type">Tipo de evento</Label>
           <Select
@@ -163,7 +163,7 @@ export function ClinicalNoteForm({
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="veterinarian">Veterinario</Label>
           <Input
@@ -222,7 +222,7 @@ export function ClinicalNoteForm({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <div className="flex flex-col gap-2">
               <Label htmlFor="prescription_date">Fecha de receta</Label>
               <Input
@@ -246,7 +246,7 @@ export function ClinicalNoteForm({
           </div>
 
           <div className="flex flex-col gap-3">
-            <div className="flex items-center justify-between">
+            <div className="flex flex-wrap items-center justify-between gap-3">
               <Label>Medicamentos</Label>
               <Button
                 type="button"

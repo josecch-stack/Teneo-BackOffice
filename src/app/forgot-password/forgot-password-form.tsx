@@ -19,7 +19,7 @@ export function ForgotPasswordForm() {
 
   if (state.success) {
     return (
-      <div className="flex w-[331px] flex-col gap-6 text-center">
+      <div className="flex w-full max-w-[331px] flex-col gap-6 text-center">
         <h1 className="text-foreground text-3xl font-bold">Revisa tu correo</h1>
         <p className="text-muted-foreground text-sm">
           Si el correo existe en nuestro sistema, te enviamos instrucciones para
@@ -33,7 +33,7 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <div className="flex w-[331px] flex-col gap-8">
+    <div className="flex w-full max-w-[331px] flex-col gap-8">
       <div className="flex flex-col gap-2">
         <h1 className="text-foreground text-3xl font-bold">
           Olvidaste tu contraseña

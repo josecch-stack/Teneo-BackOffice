@@ -93,62 +93,64 @@ export function MonthCalendar({
         })}
       </div>
 
-      <div className="border-border overflow-hidden rounded-md border">
-        <div className="border-border bg-muted/50 text-muted-foreground grid grid-cols-7 border-b text-xs font-bold uppercase">
-          {WEEKDAY_LABELS.map((label) => (
-            <div key={label} className="px-2 py-2 text-center">
-              {label}
-            </div>
-          ))}
-        </div>
-        <div className="grid grid-cols-7">
-          {days.map((day) => {
-            const key = format(day, "yyyy-MM-dd");
-            const dayEvents = eventsByDay.get(key) ?? [];
-            const inMonth = isSameMonth(day, monthDate);
-            const selected = isSameDay(day, selectedDate);
+      <div className="overflow-x-auto">
+        <div className="border-border min-w-[640px] overflow-hidden rounded-md border">
+          <div className="border-border bg-muted/50 text-muted-foreground grid grid-cols-7 border-b text-xs font-bold uppercase">
+            {WEEKDAY_LABELS.map((label) => (
+              <div key={label} className="px-2 py-2 text-center">
+                {label}
+              </div>
+            ))}
+          </div>
+          <div className="grid grid-cols-7">
+            {days.map((day) => {
+              const key = format(day, "yyyy-MM-dd");
+              const dayEvents = eventsByDay.get(key) ?? [];
+              const inMonth = isSameMonth(day, monthDate);
+              const selected = isSameDay(day, selectedDate);
 
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setSelectedDate(day)}
-                className={cn(
-                  "border-border hover:bg-accent flex min-h-20 flex-col items-start gap-1 border-r border-b p-2 text-left transition-colors last:border-r-0",
-                  !inMonth && "bg-muted/30 text-muted-foreground/50",
-                  selected && "bg-primary/10",
-                )}
-              >
-                <span
+              return (
+                <button
+                  key={key}
+                  type="button"
+                  onClick={() => setSelectedDate(day)}
                   className={cn(
-                    "flex size-6 items-center justify-center rounded-full text-xs",
-                    isToday(day) &&
-                      "bg-primary text-primary-foreground font-bold",
+                    "border-border hover:bg-accent flex min-h-20 flex-col items-start gap-1 border-r border-b p-2 text-left transition-colors last:border-r-0",
+                    !inMonth && "bg-muted/30 text-muted-foreground/50",
+                    selected && "bg-primary/10",
                   )}
                 >
-                  {format(day, "d")}
-                </span>
-                <div className="flex flex-wrap gap-1">
-                  {dayEvents.slice(0, MAX_DOTS).map((event, i) => (
-                    <span
-                      key={i}
-                      className={cn(
-                        "size-1.5 rounded-full",
-                        CALENDAR_EVENT_TYPE_COLORS[
-                          event.event_type as CalendarEventType
-                        ],
-                      )}
-                    />
-                  ))}
-                  {dayEvents.length > MAX_DOTS && (
-                    <span className="text-muted-foreground text-[10px]">
-                      +{dayEvents.length - MAX_DOTS}
-                    </span>
-                  )}
-                </div>
-              </button>
-            );
-          })}
+                  <span
+                    className={cn(
+                      "flex size-6 items-center justify-center rounded-full text-xs",
+                      isToday(day) &&
+                        "bg-primary text-primary-foreground font-bold",
+                    )}
+                  >
+                    {format(day, "d")}
+                  </span>
+                  <div className="flex flex-wrap gap-1">
+                    {dayEvents.slice(0, MAX_DOTS).map((event, i) => (
+                      <span
+                        key={i}
+                        className={cn(
+                          "size-1.5 rounded-full",
+                          CALENDAR_EVENT_TYPE_COLORS[
+                            event.event_type as CalendarEventType
+                          ],
+                        )}
+                      />
+                    ))}
+                    {dayEvents.length > MAX_DOTS && (
+                      <span className="text-muted-foreground text-[10px]">
+                        +{dayEvents.length - MAX_DOTS}
+                      </span>
+                    )}
+                  </div>
+                </button>
+              );
+            })}
+          </div>
         </div>
       </div>
 

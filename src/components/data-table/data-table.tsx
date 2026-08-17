@@ -78,7 +78,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="rounded-md border">
+      <div className="overflow-x-auto rounded-md border">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -145,7 +145,7 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="text-muted-foreground flex items-center justify-between text-sm">
+      <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-sm">
         <span>
           {rowCount} resultado{rowCount === 1 ? "" : "s"}
         </span>

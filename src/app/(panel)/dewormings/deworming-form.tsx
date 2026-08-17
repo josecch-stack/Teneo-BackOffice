@@ -61,7 +61,7 @@ export function DewormingForm({
     <form action={formAction} className="flex max-w-2xl flex-col gap-6">
       <PetPicker initialPet={deworming?.pets} disabled={pending} />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="type">Tipo</Label>
           <Select
@@ -97,7 +97,7 @@ export function DewormingForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="application_date">Fecha de aplicación</Label>
           <Input
@@ -121,7 +121,7 @@ export function DewormingForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="weight_kg">Peso al momento de la dosis (kg)</Label>
           <Input

@@ -126,7 +126,7 @@ export function VaccineForm({
         onSelect={(pet) => setPetSpecies((pet?.species as Species) ?? null)}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="vaccine_catalog_id">Vacuna (catálogo)</Label>
           <Select
@@ -201,7 +201,7 @@ export function VaccineForm({
         <input type="hidden" name="application_type" value={applicationType} />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="application_date">Fecha de aplicación</Label>
           <Input
@@ -234,7 +234,7 @@ export function VaccineForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="lab_catalog_id">Marca/Laboratorio</Label>
           <Select
@@ -282,7 +282,7 @@ export function VaccineForm({
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="vet_center">Centro veterinario</Label>
           <Input

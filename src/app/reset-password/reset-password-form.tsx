@@ -44,7 +44,7 @@ export function ResetPasswordForm({ code }: { code?: string }) {
 
   if (status === "invalid") {
     return (
-      <div className="flex w-[331px] flex-col gap-4 text-center">
+      <div className="flex w-full max-w-[331px] flex-col gap-4 text-center">
         <h1 className="text-foreground text-3xl font-bold">Enlace inválido</h1>
         <p className="text-muted-foreground text-sm">
           El enlace expiró o ya se usó. Solicita uno nuevo.
@@ -60,7 +60,7 @@ export function ResetPasswordForm({ code }: { code?: string }) {
   }
 
   return (
-    <div className="flex w-[331px] flex-col gap-8">
+    <div className="flex w-full max-w-[331px] flex-col gap-8">
       <div className="flex flex-col gap-2">
         <h1 className="text-foreground text-3xl font-bold">
           Crea una nueva contraseña

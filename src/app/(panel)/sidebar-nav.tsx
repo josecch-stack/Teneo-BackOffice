@@ -5,7 +5,14 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { NAV_GROUPS } from "./nav-items";
 
-export function SidebarNav({ permissions }: { permissions: string[] }) {
+export function SidebarNav({
+  permissions,
+  onNavigate,
+}: {
+  permissions: string[];
+  /** Fired when a nav link is clicked — closes the mobile drawer. */
+  onNavigate?: () => void;
+}) {
   const pathname = usePathname();
 
   return (
@@ -49,6 +56,7 @@ export function SidebarNav({ permissions }: { permissions: string[] }) {
                   <Link
                     key={item.href}
                     href={item.href}
+                    onClick={onNavigate}
                     className={cn(
                       "hover:bg-accent hover:text-accent-foreground flex items-center gap-3 rounded-md px-3 py-2.5 text-sm transition-colors",
                       isActive

@@ -25,7 +25,7 @@ export default function ForgotPasswordPage() {
             La historia de tu mascota, siempre en tus manos
           </p>
         </div>
-        <div className="flex flex-1 flex-col items-center justify-center gap-10 px-8 py-16">
+        <div className="flex flex-1 flex-col items-center justify-center gap-10 px-4 py-12 md:px-8 md:py-16">
           <ForgotPasswordForm />
         </div>
       </div>

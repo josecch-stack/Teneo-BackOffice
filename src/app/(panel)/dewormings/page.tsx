@@ -21,7 +21,7 @@ export default async function DewormingsPage(props: PageProps<"/dewormings">) {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-semibold">Desparasitación</h1>
           <p className="text-muted-foreground text-sm">

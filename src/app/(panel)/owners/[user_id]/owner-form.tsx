@@ -72,7 +72,7 @@ export function OwnerForm({ owner, regions }: OwnerFormProps) {
 
   return (
     <form action={formAction} className="flex max-w-2xl flex-col gap-6">
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="first_name">Nombre</Label>
           <Input
@@ -94,7 +94,7 @@ export function OwnerForm({ owner, regions }: OwnerFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="rut">RUT</Label>
           <Input
@@ -128,7 +128,7 @@ export function OwnerForm({ owner, regions }: OwnerFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="region_id">Región</Label>
           <Select
@@ -195,7 +195,7 @@ export function OwnerForm({ owner, regions }: OwnerFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="condo_building">Condominio/Edificio</Label>
           <Input

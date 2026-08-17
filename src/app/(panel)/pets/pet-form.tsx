@@ -76,7 +76,7 @@ export function PetForm({ action, pet, submitLabel }: PetFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="species">Especie</Label>
           <Select
@@ -112,7 +112,7 @@ export function PetForm({ action, pet, submitLabel }: PetFormProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="breed">Raza</Label>
           <Input
@@ -135,7 +135,7 @@ export function PetForm({ action, pet, submitLabel }: PetFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
         <div className="flex flex-col gap-2">
           <Label htmlFor="sex">Sexo</Label>
           <Select
@@ -202,7 +202,7 @@ export function PetForm({ action, pet, submitLabel }: PetFormProps) {
         />
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-2">
           <Label htmlFor="vet_name">Veterinario de cabecera</Label>
           <Input

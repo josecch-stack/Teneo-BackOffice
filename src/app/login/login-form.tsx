@@ -12,7 +12,7 @@ export function LoginForm() {
   const [state, formAction, pending] = useActionState(login, initialState);
 
   return (
-    <div className="flex w-[331px] flex-col gap-8">
+    <div className="flex w-full max-w-[331px] flex-col gap-8">
       <h1 className="text-foreground text-3xl font-bold">Iniciar sesión</h1>
       <form action={formAction} className="flex flex-col gap-6">
         <div className="flex flex-col gap-4">
