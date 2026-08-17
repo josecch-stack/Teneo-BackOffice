@@ -15,7 +15,15 @@ export default async function ResetPasswordPage(
   const codeParam = Array.isArray(code) ? code[0] : code;
 
   return (
-    <div className="bg-muted flex min-h-screen w-full items-center justify-center p-4">
+    <div className="bg-muted flex min-h-screen w-full flex-col items-center justify-center gap-6 p-4">
+      <Image
+        src="/teneo-logo-blue.png"
+        alt="Teneo Pet"
+        width={120}
+        height={45}
+        priority
+        className="md:hidden"
+      />
       <div className="bg-card flex w-full max-w-[1440px] overflow-clip rounded-2xl shadow-lg">
         <div className="bg-muted relative hidden h-[900px] w-[364px] shrink-0 flex-col justify-between overflow-hidden p-8 md:flex">
           <Image
