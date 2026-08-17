@@ -32,6 +32,8 @@ supabase/.temp/
 coverage/
 playwright-report/
 test-results/
+# Saved E2E session (real cookies) — see e2e/auth.setup.ts
+playwright/.auth/
 
 # Logs
 npm-debug.log*

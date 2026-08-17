@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
 import { writeAuditLog } from "@/lib/audit/log";
+import { checkRateLimit, getClientIp } from "@/lib/rate-limit";
 
 async function getOrigin(): Promise<string> {
   const h = await headers();
@@ -32,6 +33,15 @@ export async function login(
 
   if (!parsed.success) {
     return { error: "Correo o contraseña inválidos." };
+  }
+
+  // 5 attempts / 15 min per IP — brute-force guard on the credential check
+  // below, not on validation errors above (those never reach Supabase).
+  const ip = await getClientIp();
+  if (!checkRateLimit(`login:${ip}`, 5, 15 * 60 * 1000)) {
+    return {
+      error: "Demasiados intentos. Espera unos minutos e intenta de nuevo.",
+    };
   }
 
   const supabase = await createClient();
@@ -83,6 +93,15 @@ export async function requestPasswordReset(
   });
   if (!parsed.success) {
     return { error: "Ingresa un correo válido." };
+  }
+
+  // 3 requests / hour per IP — also protects Supabase's own (much stricter)
+  // email-send rate limit from being burned by repeated clicks. Same
+  // never-reveal posture as below: rate-limited requests still report
+  // success, just skip the actual send.
+  const ip = await getClientIp();
+  if (!checkRateLimit(`reset:${ip}`, 3, 60 * 60 * 1000)) {
+    return { success: true };
   }
 
   const supabase = await createClient();

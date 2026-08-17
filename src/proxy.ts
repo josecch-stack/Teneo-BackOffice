@@ -22,8 +22,60 @@ const PUBLIC_ROUTES = ["/login", "/forgot-password", "/reset-password"];
 // public route.
 const ALWAYS_RUNS = ["/reset-password"];
 
+const SUPABASE_ORIGIN = process.env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).origin
+  : "";
+
+// Nonce-based CSP (Next.js's documented pattern): a fresh nonce per request,
+// threaded to Server Components via the x-nonce request header (see
+// src/app/layout.tsx, which hands it to next-themes' inline theme script —
+// the only inline <script> this app renders itself). 'unsafe-inline' on
+// style-src stays: Tailwind/Next inject inline styles Fase 10 didn't budget
+// time to nonce individually, and it's a much lower-severity gap than
+// script-src would be.
+function buildCsp(nonce: string): string {
+  return [
+    "default-src 'self'",
+    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'`,
+    "style-src 'self' 'unsafe-inline'",
+    `img-src 'self' blob: data:${SUPABASE_ORIGIN ? ` ${SUPABASE_ORIGIN}` : ""}`,
+    "font-src 'self' data:",
+    `connect-src 'self'${SUPABASE_ORIGIN ? ` ${SUPABASE_ORIGIN}` : ""}`,
+    "frame-ancestors 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+  ].join("; ");
+}
+
+function withSecurityHeaders(
+  response: NextResponse,
+  csp: string,
+): NextResponse {
+  response.headers.set("Content-Security-Policy", csp);
+  response.headers.set("X-Frame-Options", "DENY");
+  response.headers.set("X-Content-Type-Options", "nosniff");
+  response.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  response.headers.set(
+    "Permissions-Policy",
+    "camera=(), microphone=(), geolocation=()",
+  );
+  response.headers.set(
+    "Strict-Transport-Security",
+    "max-age=63072000; includeSubDomains",
+  );
+  return response;
+}
+
 export async function proxy(request: NextRequest) {
-  let supabaseResponse = NextResponse.next({ request });
+  const nonce = btoa(crypto.randomUUID());
+  const csp = buildCsp(nonce);
+
+  const requestHeaders = new Headers(request.headers);
+  requestHeaders.set("x-nonce", nonce);
+
+  let supabaseResponse = NextResponse.next({
+    request: { headers: requestHeaders },
+  });
 
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -37,7 +89,9 @@ export async function proxy(request: NextRequest) {
           cookiesToSet.forEach(({ name, value }) =>
             request.cookies.set(name, value),
           );
-          supabaseResponse = NextResponse.next({ request });
+          supabaseResponse = NextResponse.next({
+            request: { headers: requestHeaders },
+          });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options),
           );
@@ -59,7 +113,7 @@ export async function proxy(request: NextRequest) {
   if (!claims && !isPublicRoute) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
-    return NextResponse.redirect(url);
+    return withSecurityHeaders(NextResponse.redirect(url), csp);
   }
 
   // Authenticated but not a panel user (e.g. a mobile app tutor account) —
@@ -68,7 +122,7 @@ export async function proxy(request: NextRequest) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     url.searchParams.set("error", "not_panel_user");
-    return NextResponse.redirect(url);
+    return withSecurityHeaders(NextResponse.redirect(url), csp);
   }
 
   const alwaysRuns = ALWAYS_RUNS.some((route) => pathname.startsWith(route));
@@ -76,10 +130,10 @@ export async function proxy(request: NextRequest) {
   if (claims?.panel_role && isPublicRoute && !alwaysRuns) {
     const url = request.nextUrl.clone();
     url.pathname = "/";
-    return NextResponse.redirect(url);
+    return withSecurityHeaders(NextResponse.redirect(url), csp);
   }
 
-  return supabaseResponse;
+  return withSecurityHeaders(supabaseResponse, csp);
 }
 
 export const config = {

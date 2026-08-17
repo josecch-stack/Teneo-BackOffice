@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { Plus_Jakarta_Sans, Geist_Mono } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
@@ -21,7 +22,12 @@ export const metadata: Metadata = {
   description: "Panel de administración de Teneo Pet",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  // Set by proxy.ts on every request — lets next-themes nonce the one inline
+  // <script> this app renders (FOUC-prevention theme script) so it's allowed
+  // under the CSP's script-src without needing 'unsafe-inline'.
+  const nonce = (await headers()).get("x-nonce") ?? undefined;
+
   return (
     <html
       lang="es"
@@ -33,6 +39,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           attribute="class"
           defaultTheme="light"
           enableSystem={false}
+          nonce={nonce}
         >
           {children}
           <Toaster />
