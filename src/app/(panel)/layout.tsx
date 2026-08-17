@@ -1,9 +1,8 @@
 import Image from "next/image";
-import { Search } from "lucide-react";
 import { verifySession } from "@/lib/auth/dal";
 import { SidebarNav } from "./sidebar-nav";
 import { UserMenu } from "./user-menu";
-import { Input } from "@/components/ui/input";
+import { GlobalSearch } from "./global-search";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function PanelLayout({ children }: LayoutProps<"/">) {
@@ -22,14 +21,7 @@ export default async function PanelLayout({ children }: LayoutProps<"/">) {
               priority
             />
           </div>
-          <div className="relative px-0">
-            <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
-            <Input
-              placeholder="Buscar"
-              className="border-border bg-card pl-9"
-              disabled
-            />
-          </div>
+          <GlobalSearch />
           <SidebarNav permissions={session.permissions} />
         </div>
         <div className="border-border flex flex-col gap-4 border-t pt-4">
