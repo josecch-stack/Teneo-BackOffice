@@ -10,8 +10,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { SPECIES_OPTIONS } from "@/lib/validations/pet";
-import { SUBSCRIPTION_STATUS_OPTIONS } from "@/lib/utils/subscription";
+import { SPECIES_OPTIONS, SPECIES_LABELS } from "@/lib/validations/pet";
+import {
+  SUBSCRIPTION_STATUS_OPTIONS,
+  SUBSCRIPTION_STATUS_LABELS,
+} from "@/lib/utils/subscription";
 
 export function ReportFilters({
   tab,
@@ -31,6 +34,10 @@ export function ReportFilters({
     params.set("page", "1");
     router.push(`${pathname}?${params.toString()}`);
   }
+
+  const regionLabel = Object.fromEntries(
+    regions.map((r) => [r.id.toString(), r.name]),
+  );
 
   return (
     <div className="flex flex-wrap items-end gap-4">
@@ -61,7 +68,9 @@ export function ReportFilters({
           onValueChange={(v) => setParam("region", v ?? "")}
         >
           <SelectTrigger className="w-48">
-            <SelectValue placeholder="Todas las regiones" />
+            <SelectValue placeholder="Todas las regiones">
+              {(value: string) => regionLabel[value] ?? "Todas las regiones"}
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {regions.map((r) => (
@@ -80,7 +89,9 @@ export function ReportFilters({
             onValueChange={(v) => setParam("species", v ?? "")}
           >
             <SelectTrigger className="w-40">
-              <SelectValue placeholder="Todas" />
+              <SelectValue placeholder="Todas">
+                {(value: string) => SPECIES_LABELS[value] ?? "Todas"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {SPECIES_OPTIONS.map((o) => (
@@ -99,7 +110,11 @@ export function ReportFilters({
             onValueChange={(v) => setParam("subscription", v ?? "")}
           >
             <SelectTrigger className="w-44">
-              <SelectValue placeholder="Todas" />
+              <SelectValue placeholder="Todas">
+                {(value: string) =>
+                  SUBSCRIPTION_STATUS_LABELS[value] ?? "Todas"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {SUBSCRIPTION_STATUS_OPTIONS.map((o) => (

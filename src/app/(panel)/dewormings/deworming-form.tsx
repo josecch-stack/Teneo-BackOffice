@@ -3,7 +3,10 @@
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { PetPicker } from "@/components/pet-picker";
-import { DEWORMING_TYPE_OPTIONS } from "@/lib/validations/deworming";
+import {
+  DEWORMING_TYPE_OPTIONS,
+  DEWORMING_TYPE_LABELS,
+} from "@/lib/validations/deworming";
 import type { DewormingFormState } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -67,7 +70,9 @@ export function DewormingForm({
             disabled={pending}
           >
             <SelectTrigger id="type">
-              <SelectValue />
+              <SelectValue>
+                {(value: string) => DEWORMING_TYPE_LABELS[value]}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {DEWORMING_TYPE_OPTIONS.map((option) => (

@@ -15,6 +15,13 @@ export const SEX_OPTIONS = [
   { value: "hembra", label: "Hembra" },
 ] as const;
 
+export const SPECIES_LABELS: Record<string, string> = Object.fromEntries(
+  SPECIES_OPTIONS.map((o) => [o.value, o.label]),
+);
+export const SEX_LABELS: Record<string, string> = Object.fromEntries(
+  SEX_OPTIONS.map((o) => [o.value, o.label]),
+);
+
 export const petFormSchema = z
   .object({
     owner_id: z.uuid("Selecciona un tutor."),

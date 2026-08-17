@@ -3,7 +3,12 @@
 import { useActionState, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { OwnerPicker } from "./owner-picker";
-import { SPECIES_OPTIONS, SEX_OPTIONS } from "@/lib/validations/pet";
+import {
+  SPECIES_OPTIONS,
+  SEX_OPTIONS,
+  SPECIES_LABELS,
+  SEX_LABELS,
+} from "@/lib/validations/pet";
 import type { PetFormState } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -81,7 +86,9 @@ export function PetForm({ action, pet, submitLabel }: PetFormProps) {
             disabled={pending}
           >
             <SelectTrigger id="species">
-              <SelectValue />
+              <SelectValue>
+                {(value: string) => SPECIES_LABELS[value]}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {SPECIES_OPTIONS.map((option) => (
@@ -137,7 +144,9 @@ export function PetForm({ action, pet, submitLabel }: PetFormProps) {
             disabled={pending}
           >
             <SelectTrigger id="sex">
-              <SelectValue placeholder="Selecciona" />
+              <SelectValue placeholder="Selecciona">
+                {(value: string) => SEX_LABELS[value] ?? "Selecciona"}
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {SEX_OPTIONS.map((option) => (

@@ -141,7 +141,12 @@ export function OwnerForm({ owner, regions }: OwnerFormProps) {
             disabled={pending}
           >
             <SelectTrigger id="region_id">
-              <SelectValue placeholder="Selecciona una región" />
+              <SelectValue placeholder="Selecciona una región">
+                {(value: string) =>
+                  regions.find((r) => r.id.toString() === value)?.name ??
+                  "Selecciona una región"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {regions.map((region) => (
@@ -161,7 +166,12 @@ export function OwnerForm({ owner, regions }: OwnerFormProps) {
             disabled={pending || !regionId}
           >
             <SelectTrigger id="commune_id">
-              <SelectValue placeholder="Selecciona una comuna" />
+              <SelectValue placeholder="Selecciona una comuna">
+                {(value: string) =>
+                  communes.find((c) => c.id.toString() === value)?.name ??
+                  "Selecciona una comuna"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {communes.map((commune) => (

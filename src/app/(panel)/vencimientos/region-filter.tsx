@@ -18,6 +18,9 @@ export function RegionFilter({
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const current = searchParams.get("region") ?? "";
+  const regionLabel = Object.fromEntries(
+    regions.map((r) => [r.id.toString(), r.name]),
+  );
 
   return (
     <Select
@@ -30,7 +33,9 @@ export function RegionFilter({
       }}
     >
       <SelectTrigger className="w-56">
-        <SelectValue placeholder="Todas las regiones" />
+        <SelectValue placeholder="Todas las regiones">
+          {(value: string) => regionLabel[value] ?? "Todas las regiones"}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {regions.map((region) => (

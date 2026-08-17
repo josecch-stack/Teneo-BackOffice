@@ -6,6 +6,10 @@ export const DEWORMING_TYPE_OPTIONS = [
   { value: "mixta", label: "Mixta" },
 ] as const;
 
+export const DEWORMING_TYPE_LABELS: Record<string, string> = Object.fromEntries(
+  DEWORMING_TYPE_OPTIONS.map((o) => [o.value, o.label]),
+);
+
 export const dewormingFormSchema = z.object({
   pet_id: z.uuid("Selecciona una mascota."),
   type: z.enum(["interna", "externa", "mixta"], "Selecciona el tipo."),

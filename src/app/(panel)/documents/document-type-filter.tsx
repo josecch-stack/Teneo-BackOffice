@@ -1,7 +1,10 @@
 "use client";
 
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
-import { DOCUMENT_TYPE_OPTIONS } from "@/lib/utils/document";
+import {
+  DOCUMENT_TYPE_OPTIONS,
+  DOCUMENT_TYPE_LABELS,
+} from "@/lib/utils/document";
 import {
   Select,
   SelectContent,
@@ -28,7 +31,9 @@ export function DocumentTypeFilter() {
       }}
     >
       <SelectTrigger className="w-56">
-        <SelectValue placeholder="Todos los tipos" />
+        <SelectValue placeholder="Todos los tipos">
+          {(value: string) => DOCUMENT_TYPE_LABELS[value] ?? "Todos los tipos"}
+        </SelectValue>
       </SelectTrigger>
       <SelectContent>
         {DOCUMENT_TYPE_OPTIONS.map((option) => (

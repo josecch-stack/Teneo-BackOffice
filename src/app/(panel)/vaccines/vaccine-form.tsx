@@ -141,7 +141,12 @@ export function VaccineForm({
             disabled={pending}
           >
             <SelectTrigger id="vaccine_catalog_id">
-              <SelectValue placeholder="Elige del catálogo (opcional)" />
+              <SelectValue placeholder="Elige del catálogo (opcional)">
+                {(value: string) =>
+                  vaccineCatalog.find((c) => c.id.toString() === value)?.name ??
+                  "Elige del catálogo (opcional)"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {vaccineCatalog.map((option) => (
@@ -178,7 +183,15 @@ export function VaccineForm({
           disabled={pending}
         >
           <SelectTrigger id="application_type" className="max-w-xs">
-            <SelectValue />
+            <SelectValue>
+              {(value: string) =>
+                value === "refuerzo"
+                  ? "Refuerzo"
+                  : value === "anual"
+                    ? "Anual"
+                    : value
+              }
+            </SelectValue>
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="refuerzo">Refuerzo</SelectItem>
@@ -234,7 +247,12 @@ export function VaccineForm({
             disabled={pending}
           >
             <SelectTrigger id="lab_catalog_id">
-              <SelectValue placeholder="Elige del catálogo (opcional)" />
+              <SelectValue placeholder="Elige del catálogo (opcional)">
+                {(value: string) =>
+                  labCatalog.find((c) => c.id.toString() === value)?.name ??
+                  "Elige del catálogo (opcional)"
+                }
+              </SelectValue>
             </SelectTrigger>
             <SelectContent>
               {labCatalog.map((option) => (
