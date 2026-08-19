@@ -151,6 +151,9 @@ export async function getRecentOwners(): Promise<RecentOwnerRow[]> {
   await requirePermission("dashboard:read");
   const supabase = await createClient();
 
+  // subscriptions.owner_id is UNIQUE (at most one subscription per owner,
+  // ever) — PostgREST embeds it as a single object, not an array, and
+  // ordering a to-one embed by foreignTable isn't meaningful/supported.
   const { data } = await supabase
     .from("owners")
     .select(
@@ -158,19 +161,18 @@ export async function getRecentOwners(): Promise<RecentOwnerRow[]> {
     )
     .is("deleted_at", null)
     .order("created_at", { ascending: false })
-    .order("created_at", { ascending: false, foreignTable: "subscriptions" })
     .limit(RECENT_LIMIT);
 
   return (data ?? []).map((r) => {
-    const activeSub = r.subscriptions?.find((s) => s.status === "active");
+    const sub = r.subscriptions?.status === "active" ? r.subscriptions : null;
     return {
       user_id: r.user_id,
       name: `${r.first_name} ${r.last_name ?? ""}`.trim(),
       email: r.email,
       petCount: r.pets?.[0]?.count ?? 0,
-      planName: activeSub?.plan_name ?? null,
-      price: activeSub?.price ?? null,
-      billingCycle: activeSub?.billing_cycle ?? null,
+      planName: sub?.plan_name ?? null,
+      price: sub?.price ?? null,
+      billingCycle: sub?.billing_cycle ?? null,
       created_at: r.created_at,
     };
   });

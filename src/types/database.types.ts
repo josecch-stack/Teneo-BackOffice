@@ -906,7 +906,9 @@ export interface Database {
           {
             foreignKeyName: "subscriptions_owner_id_fkey";
             columns: ["owner_id"];
-            isOneToOne: false;
+            // subscriptions_owner_id_key (UNIQUE) makes this 1:1, not 1:N —
+            // at most one subscription per owner, ever.
+            isOneToOne: true;
             referencedRelation: "owners";
             referencedColumns: ["user_id"];
           },

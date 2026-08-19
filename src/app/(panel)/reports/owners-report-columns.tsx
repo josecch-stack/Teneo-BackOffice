@@ -17,7 +17,9 @@ export interface OwnerReportRow {
   regions: { name: string } | null;
   communes: { name: string } | null;
   pets: { count: number }[] | null;
-  subscriptions: { status: string }[] | null;
+  // subscriptions.owner_id is UNIQUE — at most one per owner, embedded as a
+  // single object, not an array.
+  subscriptions: { status: string } | null;
 }
 
 export const ownersReportColumns: ColumnDef<OwnerReportRow>[] = [
@@ -51,7 +53,7 @@ export const ownersReportColumns: ColumnDef<OwnerReportRow>[] = [
     header: "Suscripción",
     enableSorting: false,
     cell: ({ row }) => {
-      const status = row.original.subscriptions?.[0]?.status;
+      const status = row.original.subscriptions?.status;
       return status
         ? (SUBSCRIPTION_STATUS_LABELS[status] ?? status)
         : "Sin suscripción";

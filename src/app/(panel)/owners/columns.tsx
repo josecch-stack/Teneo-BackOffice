@@ -18,8 +18,13 @@ export interface OwnerRow {
   regions: { name: string } | null;
   communes: { name: string } | null;
   pet_shares: { count: number }[] | null;
-  subscriptions:
-    { plan_name: string; status: string; price: number | null }[] | null;
+  // subscriptions.owner_id is UNIQUE — an owner has at most one subscription
+  // ever, so PostgREST embeds it as a single object, never an array.
+  subscriptions: {
+    plan_name: string;
+    status: string;
+    price: number | null;
+  } | null;
 }
 
 export const ownerColumns: ColumnDef<OwnerRow>[] = [
@@ -74,12 +79,10 @@ export const ownerColumns: ColumnDef<OwnerRow>[] = [
     header: "Suscripción",
     enableSorting: false,
     cell: ({ row }) => {
-      const active = row.original.subscriptions?.find(
-        (s) => s.status === "active",
-      );
-      return active ? (
+      const sub = row.original.subscriptions;
+      return sub && sub.status === "active" ? (
         <Badge className="bg-amber-500/10 text-amber-600">
-          {active.plan_name}
+          {sub.plan_name}
         </Badge>
       ) : (
         <span className="text-muted-foreground">Free</span>

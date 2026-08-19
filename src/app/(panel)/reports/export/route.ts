@@ -25,7 +25,7 @@ const ownersExportColumns: ExportColumn<OwnerReportRow>[] = [
   {
     header: "Estado de suscripción",
     value: (r) => {
-      const status = r.subscriptions?.[0]?.status;
+      const status = r.subscriptions?.status;
       return status
         ? (SUBSCRIPTION_STATUS_LABELS[status] ?? status)
         : "Sin suscripción";
