@@ -6,6 +6,7 @@ import { es } from "date-fns/locale";
 import {
   SUBSCRIPTION_STATUS_LABELS,
   SUBSCRIPTION_STATUS_BADGE_CLASS,
+  SUBSCRIPTION_PAYMENT_METHOD_LABELS,
 } from "@/lib/utils/subscription";
 import { Badge } from "@/components/ui/badge";
 
@@ -15,6 +16,7 @@ export interface SubscriptionRow {
   status: string;
   start_date: string | null;
   end_date: string | null;
+  payment_method: string | null;
   owners: {
     first_name: string;
     last_name: string | null;
@@ -64,6 +66,20 @@ export const subscriptionColumns: ColumnDef<SubscriptionRow>[] = [
         {SUBSCRIPTION_STATUS_LABELS[row.original.status] ?? row.original.status}
       </Badge>
     ),
+  },
+  {
+    id: "payment_method",
+    accessorKey: "payment_method",
+    header: "Método de pago",
+    cell: ({ row }) =>
+      row.original.payment_method ? (
+        <Badge variant="outline">
+          {SUBSCRIPTION_PAYMENT_METHOD_LABELS[row.original.payment_method] ??
+            row.original.payment_method}
+        </Badge>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      ),
   },
   {
     id: "start_date",

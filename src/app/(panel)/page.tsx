@@ -1,7 +1,8 @@
 import { verifySession } from "@/lib/auth/dal";
 import { getDashboardStats } from "./dashboard-actions";
 import { StatTile } from "./stat-tile";
-import { SpeciesChart } from "./species-chart";
+import { CategoryBarChart } from "./category-bar-chart";
+import { MonthlyBarChart } from "./monthly-bar-chart";
 
 export default async function DashboardPage() {
   const session = await verifySession();
@@ -27,12 +28,40 @@ export default async function DashboardPage() {
         <StatTile label="Mascotas compartidas" value={stats.petSharesTotal} />
       </div>
 
-      <SpeciesChart
-        data={stats.speciesDistribution.map((s) => ({
-          species: s.species,
-          count: s.count,
-        }))}
-      />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <MonthlyBarChart
+          title="Usuarios registrados por mes"
+          emptyMessage="Sin registros en los últimos 6 meses."
+          data={stats.ownersByMonth}
+          seriesName="Tutores"
+        />
+        <CategoryBarChart
+          title="Mascotas por especie"
+          emptyMessage="Sin mascotas registradas todavía."
+          data={stats.speciesDistribution.map((s) => ({
+            label: s.species,
+            count: s.count,
+          }))}
+          seriesName="Mascotas"
+          color="var(--chart-2)"
+        />
+      </div>
+
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <MonthlyBarChart
+          title="Suscripciones por mes"
+          emptyMessage="Sin suscripciones en los últimos 6 meses."
+          data={stats.subscriptionsByMonth}
+          seriesName="Suscripciones"
+        />
+        <CategoryBarChart
+          title="Notificaciones por tipo"
+          emptyMessage="Sin notificaciones registradas todavía."
+          data={stats.notificationsByType}
+          seriesName="Notificaciones"
+          color="var(--chart-2)"
+        />
+      </div>
     </div>
   );
 }

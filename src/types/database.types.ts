@@ -860,6 +860,8 @@ export interface Database {
           end_date: string | null;
           stripe_customer_id: string | null;
           stripe_subscription_id: string | null;
+          payment_method:
+            Database["public"]["Enums"]["subscription_payment_method"] | null;
           created_at: string;
           updated_at: string;
         };
@@ -872,6 +874,8 @@ export interface Database {
           end_date?: string | null;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
+          payment_method?:
+            Database["public"]["Enums"]["subscription_payment_method"] | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -884,6 +888,8 @@ export interface Database {
           end_date?: string | null;
           stripe_customer_id?: string | null;
           stripe_subscription_id?: string | null;
+          payment_method?:
+            Database["public"]["Enums"]["subscription_payment_method"] | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -1208,6 +1214,7 @@ export interface Database {
       species_type: "perro" | "gato" | "conejo" | "ave" | "reptil" | "otro";
       subscription_status:
         "active" | "cancelled" | "past_due" | "trialing" | "inactive";
+      subscription_payment_method: "apple" | "google" | "card";
       vaccine_application_type: "refuerzo" | "anual";
     };
     CompositeTypes: Record<string, never>;

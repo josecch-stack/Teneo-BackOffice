@@ -33,7 +33,7 @@ export async function listSubscriptions(params: ListSubscriptionsParams) {
   let query = supabase
     .from("subscriptions")
     .select(
-      "id, plan_name, status, start_date, end_date, owners(first_name, last_name, email)",
+      "id, plan_name, status, start_date, end_date, payment_method, owners(first_name, last_name, email)",
       {
         count: "exact",
       },
