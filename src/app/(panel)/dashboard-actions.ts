@@ -133,3 +133,78 @@ export async function getDashboardStats() {
       .filter((t) => t.count > 0),
   };
 }
+
+const RECENT_LIMIT = 5;
+
+export interface RecentOwnerRow {
+  user_id: string;
+  name: string;
+  email: string | null;
+  petCount: number;
+  planName: string | null;
+  price: number | null;
+  billingCycle: string | null;
+  created_at: string;
+}
+
+export async function getRecentOwners(): Promise<RecentOwnerRow[]> {
+  await requirePermission("dashboard:read");
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("owners")
+    .select(
+      "user_id, first_name, last_name, email, created_at, pets(count), subscriptions(plan_name, status, price, billing_cycle)",
+    )
+    .is("deleted_at", null)
+    .order("created_at", { ascending: false })
+    .order("created_at", { ascending: false, foreignTable: "subscriptions" })
+    .limit(RECENT_LIMIT);
+
+  return (data ?? []).map((r) => {
+    const activeSub = r.subscriptions?.find((s) => s.status === "active");
+    return {
+      user_id: r.user_id,
+      name: `${r.first_name} ${r.last_name ?? ""}`.trim(),
+      email: r.email,
+      petCount: r.pets?.[0]?.count ?? 0,
+      planName: activeSub?.plan_name ?? null,
+      price: activeSub?.price ?? null,
+      billingCycle: activeSub?.billing_cycle ?? null,
+      created_at: r.created_at,
+    };
+  });
+}
+
+export interface RecentSubscriptionRow {
+  id: string;
+  ownerName: string;
+  planName: string;
+  billingCycle: string | null;
+  created_at: string;
+}
+
+export async function getRecentSubscriptions(): Promise<
+  RecentSubscriptionRow[]
+> {
+  await requirePermission("dashboard:read");
+  const supabase = await createClient();
+
+  const { data } = await supabase
+    .from("subscriptions")
+    .select(
+      "id, plan_name, billing_cycle, created_at, owners(first_name, last_name)",
+    )
+    .order("created_at", { ascending: false })
+    .limit(RECENT_LIMIT);
+
+  return (data ?? []).map((r) => ({
+    id: r.id,
+    ownerName: r.owners
+      ? `${r.owners.first_name} ${r.owners.last_name ?? ""}`.trim()
+      : "—",
+    planName: r.plan_name,
+    billingCycle: r.billing_cycle,
+    created_at: r.created_at,
+  }));
+}

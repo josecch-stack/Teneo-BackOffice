@@ -18,6 +18,8 @@ export interface OwnerRow {
   regions: { name: string } | null;
   communes: { name: string } | null;
   pet_shares: { count: number }[] | null;
+  subscriptions:
+    { plan_name: string; status: string; price: number | null }[] | null;
 }
 
 export const ownerColumns: ColumnDef<OwnerRow>[] = [
@@ -66,6 +68,23 @@ export const ownerColumns: ColumnDef<OwnerRow>[] = [
       row.original.communes?.name
         ? `${row.original.communes.name}, ${row.original.regions?.name ?? ""}`
         : "—",
+  },
+  {
+    id: "subscription",
+    header: "Suscripción",
+    enableSorting: false,
+    cell: ({ row }) => {
+      const active = row.original.subscriptions?.find(
+        (s) => s.status === "active",
+      );
+      return active ? (
+        <Badge className="bg-amber-500/10 text-amber-600">
+          {active.plan_name}
+        </Badge>
+      ) : (
+        <span className="text-muted-foreground">Free</span>
+      );
+    },
   },
   {
     id: "created_at",

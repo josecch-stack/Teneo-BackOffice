@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-table";
 import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
-import { ChevronLeft, ChevronRight, ChevronsUpDown } from "lucide-react";
+import { ChevronsUpDown } from "lucide-react";
 import {
   Table,
   TableBody,
@@ -17,8 +17,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { buttonVariants } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+/**
+ * First, last, current ±1 always shown; gaps collapse to a single "…" —
+ * standard "1 2 3 … 9" pattern, never a wall of every page number.
+ */
+function pageNumbers(current: number, total: number): (number | "gap")[] {
+  if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+  const keep = new Set(
+    [1, 2, total - 1, total, current - 1, current, current + 1].filter(
+      (p) => p >= 1 && p <= total,
+    ),
+  );
+  const sorted = [...keep].sort((a, b) => a - b);
+  const result: (number | "gap")[] = [];
+  let prev = 0;
+  for (const p of sorted) {
+    if (prev && p - prev > 1) result.push("gap");
+    result.push(p);
+    prev = p;
+  }
+  return result;
+}
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -145,57 +166,51 @@ export function DataTable<TData, TValue>({
         </Table>
       </div>
 
-      <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-2 text-sm">
+      <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-3 text-sm">
         <span>
           {rowCount} resultado{rowCount === 1 ? "" : "s"}
         </span>
-        <div className="flex items-center gap-2">
-          <span>
-            Página {page} de {Math.max(pageCount, 1)}
-          </span>
+        <div className="flex items-center gap-1">
           {page > 1 ? (
             <Link
               href={hrefWithParam("page", String(page - 1))}
-              aria-label="Página anterior"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "icon" }),
-              )}
+              className="hover:text-foreground px-2 py-1 font-medium"
             >
-              <ChevronLeft className="size-4" />
+              Anterior
             </Link>
           ) : (
-            <button
-              type="button"
-              disabled
-              aria-label="Página anterior"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "icon" }),
-              )}
-            >
-              <ChevronLeft className="size-4" />
-            </button>
+            <span className="px-2 py-1 opacity-40">Anterior</span>
+          )}
+          {pageNumbers(page, Math.max(pageCount, 1)).map((p, i) =>
+            p === "gap" ? (
+              <span key={`gap-${i}`} className="px-1.5">
+                …
+              </span>
+            ) : (
+              <Link
+                key={p}
+                href={hrefWithParam("page", String(p))}
+                aria-current={p === page ? "page" : undefined}
+                className={cn(
+                  "flex size-7 items-center justify-center rounded-full tabular-nums",
+                  p === page
+                    ? "bg-primary text-primary-foreground font-medium"
+                    : "hover:bg-muted",
+                )}
+              >
+                {p}
+              </Link>
+            ),
           )}
           {page < pageCount ? (
             <Link
               href={hrefWithParam("page", String(page + 1))}
-              aria-label="Página siguiente"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "icon" }),
-              )}
+              className="hover:text-foreground px-2 py-1 font-medium"
             >
-              <ChevronRight className="size-4" />
+              Siguiente
             </Link>
           ) : (
-            <button
-              type="button"
-              disabled
-              aria-label="Página siguiente"
-              className={cn(
-                buttonVariants({ variant: "outline", size: "icon" }),
-              )}
-            >
-              <ChevronRight className="size-4" />
-            </button>
+            <span className="px-2 py-1 opacity-40">Siguiente</span>
           )}
         </div>
       </div>

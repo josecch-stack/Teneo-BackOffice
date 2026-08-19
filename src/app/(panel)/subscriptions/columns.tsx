@@ -7,6 +7,8 @@ import {
   SUBSCRIPTION_STATUS_LABELS,
   SUBSCRIPTION_STATUS_BADGE_CLASS,
   SUBSCRIPTION_PAYMENT_METHOD_LABELS,
+  SUBSCRIPTION_BILLING_CYCLE_LABELS,
+  formatCLP,
 } from "@/lib/utils/subscription";
 import { Badge } from "@/components/ui/badge";
 
@@ -17,6 +19,8 @@ export interface SubscriptionRow {
   start_date: string | null;
   end_date: string | null;
   payment_method: string | null;
+  price: number | null;
+  billing_cycle: string | null;
   owners: {
     first_name: string;
     last_name: string | null;
@@ -53,7 +57,25 @@ export const subscriptionColumns: ColumnDef<SubscriptionRow>[] = [
     id: "plan_name",
     accessorKey: "plan_name",
     header: "Plan",
-    cell: ({ row }) => row.original.plan_name,
+    cell: ({ row }) => (
+      <span className="flex flex-col">
+        <span className="font-medium">
+          {row.original.plan_name}
+          {row.original.billing_cycle && (
+            <span className="text-muted-foreground font-normal">
+              {" "}
+              {SUBSCRIPTION_BILLING_CYCLE_LABELS[row.original.billing_cycle] ??
+                row.original.billing_cycle}
+            </span>
+          )}
+        </span>
+        {row.original.price != null && (
+          <span className="text-muted-foreground text-sm">
+            {formatCLP(row.original.price)}
+          </span>
+        )}
+      </span>
+    ),
   },
   {
     id: "status",

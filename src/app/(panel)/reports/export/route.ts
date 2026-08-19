@@ -77,11 +77,12 @@ export async function GET(request: Request) {
   const regionId = region ? Number(region) : undefined;
   const species = url.searchParams.get("species") ?? undefined;
   const subscriptionStatus = url.searchParams.get("subscription") ?? undefined;
+  const plan = url.searchParams.get("plan") ?? undefined;
 
   let buffer: string | Buffer;
   let filename: string;
   let rowCount: number;
-  const filters = { from, to, regionId, species, subscriptionStatus };
+  const filters = { from, to, regionId, species, subscriptionStatus, plan };
 
   if (type === "owners") {
     const rows = (await listOwnersReportAll({
@@ -89,6 +90,7 @@ export async function GET(request: Request) {
       to,
       regionId,
       subscriptionStatus,
+      plan,
     })) as OwnerReportRow[];
     rowCount = rows.length;
     buffer =

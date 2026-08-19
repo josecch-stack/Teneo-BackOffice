@@ -12,6 +12,7 @@ export interface OwnersReportFilters {
   to?: string;
   regionId?: number;
   subscriptionStatus?: string;
+  plan?: string;
 }
 
 export interface PetsReportFilters {
@@ -28,9 +29,10 @@ function buildOwnersReportQuery(
   supabase: Awaited<ReturnType<typeof createClient>>,
   filters: OwnersReportFilters,
 ) {
-  const embed = filters.subscriptionStatus
-    ? "subscriptions!inner(status)"
-    : "subscriptions(status)";
+  const embed =
+    filters.subscriptionStatus || filters.plan
+      ? "subscriptions!inner(status, plan_name)"
+      : "subscriptions(status, plan_name)";
   let query = supabase
     .from("owners")
     .select(`${OWNERS_REPORT_SELECT}, ${embed}`, { count: "exact" })
@@ -45,6 +47,7 @@ function buildOwnersReportQuery(
       filters.subscriptionStatus as Database["public"]["Enums"]["subscription_status"],
     );
   }
+  if (filters.plan) query = query.eq("subscriptions.plan_name", filters.plan);
 
   return query;
 }
@@ -110,10 +113,15 @@ function buildPetsReportQuery(
   if (filters.from) query = query.gte("created_at", filters.from);
   if (filters.to) query = query.lte("created_at", filters.to);
   if (filters.species) {
-    query = query.eq(
-      "species",
-      filters.species as Database["public"]["Enums"]["species_type"],
-    );
+    // Comma-separated so "Otros" (Pets page tab) can group several species
+    // values under one filter without a dedicated param.
+    const values = filters.species.split(
+      ",",
+    ) as Database["public"]["Enums"]["species_type"][];
+    query =
+      values.length > 1
+        ? query.in("species", values)
+        : query.eq("species", values[0]!);
   }
   if (filters.regionId) query = query.eq("owners.region_id", filters.regionId);
 

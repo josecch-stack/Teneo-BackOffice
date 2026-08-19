@@ -14,6 +14,10 @@ export interface ListOwnersParams {
   page?: number;
   sort?: string;
   dir?: "asc" | "desc";
+  from?: string;
+  to?: string;
+  /** "all" (default) | "subscribed" (any active plan) | an exact plan_name */
+  plan?: string;
 }
 
 const SORTABLE_COLUMNS = new Set(["first_name", "created_at"]);
@@ -27,11 +31,16 @@ export async function listOwners(params: ListOwnersParams) {
     ? params.sort!
     : "created_at";
   const dir = params.dir === "asc";
+  const filterBySubscription = params.plan && params.plan !== "all";
+
+  const subscriptionsEmbed = filterBySubscription
+    ? "subscriptions!inner(plan_name, status, price, billing_cycle)"
+    : "subscriptions(plan_name, status, price, billing_cycle)";
 
   let query = supabase
     .from("owners")
     .select(
-      "user_id, first_name, last_name, rut, phone, email, created_at, regions(name), communes(name), pet_shares!shared_by(count)",
+      `user_id, first_name, last_name, rut, phone, email, created_at, regions(name), communes(name), pet_shares!shared_by(count), ${subscriptionsEmbed}`,
       { count: "exact" },
     )
     .is("deleted_at", null);
@@ -41,6 +50,13 @@ export async function listOwners(params: ListOwnersParams) {
     query = query.or(
       `first_name.ilike.%${q}%,last_name.ilike.%${q}%,rut.ilike.%${q}%,phone.ilike.%${q}%,email.ilike.%${q}%`,
     );
+  }
+  if (params.from) query = query.gte("created_at", params.from);
+  if (params.to) query = query.lte("created_at", params.to);
+  if (filterBySubscription) {
+    query = query.eq("subscriptions.status", "active");
+    if (params.plan !== "subscribed")
+      query = query.eq("subscriptions.plan_name", params.plan!);
   }
 
   const from = (page - 1) * PAGE_SIZE;

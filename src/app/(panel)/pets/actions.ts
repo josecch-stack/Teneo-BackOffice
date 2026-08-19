@@ -7,6 +7,7 @@ import { requirePermission } from "@/lib/auth/dal";
 import { writeAuditLog } from "@/lib/audit/log";
 import { petFormSchema } from "@/lib/validations/pet";
 import { cascadeDeletePetClinicalRecords } from "@/lib/supabase/cascade-delete";
+import type { Database } from "@/types/database.types";
 
 const PAGE_SIZE = 20;
 
@@ -15,6 +16,11 @@ export interface ListPetsParams {
   page?: number;
   sort?: string;
   dir?: "asc" | "desc";
+  from?: string;
+  to?: string;
+  /** "all" (default), one SPECIES_OPTIONS value, or comma-separated ones
+   * ("Otros" tab groups every species outside perro/gato). */
+  species?: string;
 }
 
 const SORTABLE_COLUMNS = new Set(["name", "created_at", "birth_date"]);
@@ -42,6 +48,21 @@ export async function listPets(params: ListPetsParams) {
   if (params.q) {
     const q = params.q.trim();
     query = query.or(`name.ilike.%${q}%,chip_number.ilike.%${q}%`);
+  }
+  if (params.from) query = query.gte("created_at", params.from);
+  if (params.to) query = query.lte("created_at", params.to);
+  if (params.species) {
+    const values = params.species.split(",");
+    query =
+      values.length > 1
+        ? query.in(
+            "species",
+            values as Database["public"]["Enums"]["species_type"][],
+          )
+        : query.eq(
+            "species",
+            values[0] as Database["public"]["Enums"]["species_type"],
+          );
   }
 
   const from = (page - 1) * PAGE_SIZE;

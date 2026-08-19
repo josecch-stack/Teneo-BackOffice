@@ -862,6 +862,9 @@ export interface Database {
           stripe_subscription_id: string | null;
           payment_method:
             Database["public"]["Enums"]["subscription_payment_method"] | null;
+          price: number | null;
+          billing_cycle:
+            Database["public"]["Enums"]["subscription_billing_cycle"] | null;
           created_at: string;
           updated_at: string;
         };
@@ -876,6 +879,9 @@ export interface Database {
           stripe_subscription_id?: string | null;
           payment_method?:
             Database["public"]["Enums"]["subscription_payment_method"] | null;
+          price?: number | null;
+          billing_cycle?:
+            Database["public"]["Enums"]["subscription_billing_cycle"] | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -890,6 +896,9 @@ export interface Database {
           stripe_subscription_id?: string | null;
           payment_method?:
             Database["public"]["Enums"]["subscription_payment_method"] | null;
+          price?: number | null;
+          billing_cycle?:
+            Database["public"]["Enums"]["subscription_billing_cycle"] | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -1215,6 +1224,7 @@ export interface Database {
       subscription_status:
         "active" | "cancelled" | "past_due" | "trialing" | "inactive";
       subscription_payment_method: "apple" | "google" | "card";
+      subscription_billing_cycle: "monthly" | "annual";
       vaccine_application_type: "refuerzo" | "anual";
     };
     CompositeTypes: Record<string, never>;

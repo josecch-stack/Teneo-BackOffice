@@ -33,3 +33,31 @@ export const SUBSCRIPTION_PAYMENT_METHOD_LABELS: Record<string, string> =
   Object.fromEntries(
     SUBSCRIPTION_PAYMENT_METHOD_OPTIONS.map((o) => [o.value, o.label]),
   );
+
+export const SUBSCRIPTION_BILLING_CYCLE_LABELS: Record<string, string> = {
+  monthly: "mensual",
+  annual: "anual",
+};
+
+const CLP_FORMATTER = new Intl.NumberFormat("es-CL", {
+  style: "currency",
+  currency: "CLP",
+  maximumFractionDigits: 0,
+});
+
+export function formatCLP(amount: number): string {
+  return CLP_FORMATTER.format(amount);
+}
+
+/** "Plus" + 37900 + "annual" -> "Plus anual — $37.900" */
+export function formatPlanSummary(
+  planName: string,
+  price: number | null,
+  billingCycle: string | null,
+): string {
+  const cycle = billingCycle
+    ? ` ${SUBSCRIPTION_BILLING_CYCLE_LABELS[billingCycle] ?? billingCycle}`
+    : "";
+  const amount = price != null ? ` — ${formatCLP(price)}` : "";
+  return `${planName}${cycle}${amount}`;
+}

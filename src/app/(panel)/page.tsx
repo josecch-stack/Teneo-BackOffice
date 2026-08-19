@@ -1,12 +1,22 @@
 import { verifySession } from "@/lib/auth/dal";
-import { getDashboardStats } from "./dashboard-actions";
+import {
+  getDashboardStats,
+  getRecentOwners,
+  getRecentSubscriptions,
+} from "./dashboard-actions";
 import { StatTile } from "./stat-tile";
 import { CategoryBarChart } from "./category-bar-chart";
 import { MonthlyBarChart } from "./monthly-bar-chart";
+import { RecentOwnersCard } from "./recent-owners-card";
+import { RecentSubscriptionsCard } from "./recent-subscriptions-card";
 
 export default async function DashboardPage() {
   const session = await verifySession();
-  const stats = await getDashboardStats();
+  const [stats, recentOwners, recentSubscriptions] = await Promise.all([
+    getDashboardStats(),
+    getRecentOwners(),
+    getRecentSubscriptions(),
+  ]);
 
   return (
     <div className="flex flex-col gap-6">
@@ -62,6 +72,9 @@ export default async function DashboardPage() {
           color="var(--chart-2)"
         />
       </div>
+
+      <RecentOwnersCard rows={recentOwners} />
+      <RecentSubscriptionsCard rows={recentSubscriptions} />
     </div>
   );
 }

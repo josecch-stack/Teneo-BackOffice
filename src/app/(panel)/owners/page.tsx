@@ -1,22 +1,50 @@
 import { listOwners } from "./actions";
 import { ownerColumns, type OwnerRow } from "./columns";
+import { verifySession, hasPermission } from "@/lib/auth/dal";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
+import { DateRangeFilter } from "@/components/data-table/date-range-filter";
+import { TabLinks } from "@/components/data-table/tab-links";
+import { ExportMenu } from "@/components/data-table/export-menu";
+
+const PLAN_TABS = [
+  { value: "all", label: "Todos" },
+  { value: "subscribed", label: "Premium" },
+  { value: "Plus", label: "Plus" },
+  { value: "Pro", label: "Pro" },
+];
 
 export default async function OwnersPage(props: PageProps<"/owners">) {
+  const session = await verifySession();
+  const canExport = hasPermission(session, "export:bulk");
+
   const searchParams = await props.searchParams;
   const q = typeof searchParams.q === "string" ? searchParams.q : undefined;
   const page = Number(searchParams.page) || 1;
   const sort =
     typeof searchParams.sort === "string" ? searchParams.sort : undefined;
   const dir = searchParams.dir === "asc" ? "asc" : "desc";
+  const from =
+    typeof searchParams.from === "string" ? searchParams.from : undefined;
+  const to = typeof searchParams.to === "string" ? searchParams.to : undefined;
+  const plan =
+    typeof searchParams.plan === "string" ? searchParams.plan : "all";
 
   const { rows, rowCount, pageCount } = await listOwners({
     q,
     page,
     sort,
     dir,
+    from,
+    to,
+    plan,
   });
+
+  const exportParams = new URLSearchParams({ type: "owners" });
+  if (from) exportParams.set("from", from);
+  if (to) exportParams.set("to", to);
+  if (plan === "subscribed") exportParams.set("subscription", "active");
+  else if (plan !== "all") exportParams.set("plan", plan);
 
   return (
     <div className="flex flex-col gap-4">
@@ -27,9 +55,20 @@ export default async function OwnersPage(props: PageProps<"/owners">) {
             Propietarios registrados en la app móvil.
           </p>
         </div>
+        {canExport && (
+          <ExportMenu
+            csvHref={`/reports/export?${exportParams.toString()}&format=csv`}
+            xlsxHref={`/reports/export?${exportParams.toString()}&format=xlsx`}
+          />
+        )}
       </div>
 
-      <DataTableSearch placeholder="Buscar por nombre, RUT, correo o teléfono..." />
+      <TabLinks param="plan" options={PLAN_TABS} />
+
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <DataTableSearch placeholder="Buscar por nombre, RUT, correo o teléfono..." />
+        <DateRangeFilter />
+      </div>
 
       <DataTable
         columns={ownerColumns}
