@@ -51,3 +51,17 @@ export function formatDateTimeCL(iso: string): string {
   const p = partsCL(iso);
   return `${p.day}/${p.month}/${p.year} ${p.hour}:${p.minute}`;
 }
+
+/**
+ * "Today" in Chile as "YYYY-MM-DD" — meant to be computed once, server-side
+ * (e.g. in a page.tsx Server Component), and passed down as a prop to any
+ * "use client" component that needs to know which calendar day is "today".
+ * `new Date()` read via local getters inside a client component gives a
+ * different day depending on whether it's evaluated during SSR (Railway,
+ * UTC) or hydration (the visitor's browser, Chile) — this sidesteps that by
+ * only ever computing "today" once, in one place.
+ */
+export function getTodayCL(): string {
+  const p = partsCL(new Date().toISOString());
+  return `${p.year}-${p.month}-${p.day}`;
+}

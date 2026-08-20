@@ -2,9 +2,7 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { format, isSameDay, isSameMonth, isToday } from "date-fns";
-import { es } from "date-fns/locale";
-import { getMonthGridDays } from "@/lib/utils/calendar-grid";
+import { getMonthGridDays, dayKeyUTC } from "@/lib/utils/calendar-grid";
 import {
   CALENDAR_EVENT_TYPES,
   CALENDAR_EVENT_TYPE_COLORS,
@@ -18,19 +16,39 @@ import { cn } from "@/lib/utils";
 const WEEKDAY_LABELS = ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"];
 const MAX_DOTS = 3;
 
+/** "jueves 13 de agosto" — reads selectedDate via UTC (timeZone: "UTC"),
+ * consistent with how every date in this component is built/compared. */
+function selectedDateLabel(d: Date): string {
+  const parts = new Intl.DateTimeFormat("es-CL", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    timeZone: "UTC",
+  }).formatToParts(d);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return `${get("weekday")} ${get("day")} de ${get("month")}`;
+}
+
 export function MonthCalendar({
   monthDate,
   events,
+  todayISO,
 }: {
   monthDate: Date;
   events: CalendarEventRow[];
+  /** "YYYY-MM-DD" for Chile's current calendar day, computed once
+   * server-side (see calendar/page.tsx) — never `new Date()` here, which
+   * would read a different day during SSR (Railway, UTC) vs. hydration
+   * (the visitor's browser, Chile). */
+  todayISO: string;
 }) {
   const [activeTypes, setActiveTypes] = useState<Set<CalendarEventType>>(
     new Set(CALENDAR_EVENT_TYPES),
   );
-  const today = new Date();
+  const today = useMemo(() => new Date(`${todayISO}T00:00:00Z`), [todayISO]);
+  const monthKey = `${monthDate.getUTCFullYear()}-${String(monthDate.getUTCMonth() + 1).padStart(2, "0")}`;
   const [selectedDate, setSelectedDate] = useState<Date>(
-    isSameMonth(today, monthDate) ? today : monthDate,
+    todayISO.startsWith(monthKey) ? today : monthDate,
   );
 
   const days = useMemo(() => getMonthGridDays(monthDate), [monthDate]);
@@ -61,7 +79,7 @@ export function MonthCalendar({
     });
   }
 
-  const selectedKey = format(selectedDate, "yyyy-MM-dd");
+  const selectedKey = dayKeyUTC(selectedDate);
   const selectedEvents = eventsByDay.get(selectedKey) ?? [];
 
   return (
@@ -104,10 +122,10 @@ export function MonthCalendar({
           </div>
           <div className="grid grid-cols-7">
             {days.map((day) => {
-              const key = format(day, "yyyy-MM-dd");
+              const key = dayKeyUTC(day);
               const dayEvents = eventsByDay.get(key) ?? [];
-              const inMonth = isSameMonth(day, monthDate);
-              const selected = isSameDay(day, selectedDate);
+              const inMonth = day.getUTCMonth() === monthDate.getUTCMonth();
+              const selected = key === selectedKey;
 
               return (
                 <button
@@ -123,11 +141,11 @@ export function MonthCalendar({
                   <span
                     className={cn(
                       "flex size-6 items-center justify-center rounded-full text-xs",
-                      isToday(day) &&
+                      key === todayISO &&
                         "bg-primary text-primary-foreground font-bold",
                     )}
                   >
-                    {format(day, "d")}
+                    {day.getUTCDate()}
                   </span>
                   <div className="flex flex-wrap gap-1">
                     {dayEvents.slice(0, MAX_DOTS).map((event, i) => (
@@ -156,7 +174,7 @@ export function MonthCalendar({
 
       <div className="border-border flex flex-col gap-2 rounded-md border p-4">
         <h2 className="text-foreground text-sm font-bold">
-          {format(selectedDate, "EEEE d 'de' MMMM", { locale: es })}
+          {selectedDateLabel(selectedDate)}
         </h2>
         {selectedEvents.length === 0 ? (
           <p className="text-muted-foreground text-sm">Sin eventos este día.</p>
