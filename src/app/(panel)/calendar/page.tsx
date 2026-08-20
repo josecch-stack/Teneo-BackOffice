@@ -18,12 +18,17 @@ function monthParamFor(monthDate: Date, offset: number): string {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, "0")}`;
 }
 
+// Built from parts (not Intl's single-string long format, which inserts
+// "de" — "agosto de 2026" — that then collides with the header's `capitalize`
+// CSS class and reads "Agosto De 2026").
 function monthLabel(monthDate: Date): string {
-  return new Intl.DateTimeFormat("es-CL", {
+  const parts = new Intl.DateTimeFormat("es-CL", {
     month: "long",
     year: "numeric",
     timeZone: "UTC",
-  }).format(monthDate);
+  }).formatToParts(monthDate);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+  return `${get("month")} ${get("year")}`;
 }
 
 // UTC-anchored on purpose (see month-calendar.tsx / calendar-grid.ts) — a
