@@ -12,7 +12,7 @@ export default async function PanelLayout({ children }: LayoutProps<"/">) {
         role={session.role}
         permissions={session.permissions}
       />
-      <aside className="bg-sidebar text-sidebar-foreground hidden w-[280px] shrink-0 flex-col justify-between gap-6 px-4 py-6 md:flex">
+      <aside className="bg-sidebar text-sidebar-foreground sticky top-0 hidden h-screen w-[280px] shrink-0 flex-col gap-6 overflow-hidden px-4 py-6 md:flex">
         <SidebarContent
           email={session.email}
           role={session.role}

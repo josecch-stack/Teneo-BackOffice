@@ -56,7 +56,7 @@ function SheetContent({
       <DialogPrimitive.Popup
         data-slot="sheet-content"
         className={cn(
-          "bg-sidebar text-sidebar-foreground data-open:animate-in data-open:slide-in-from-left data-closed:animate-out data-closed:slide-out-to-left fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col gap-6 overflow-y-auto px-4 py-6 shadow-lg duration-200 outline-none",
+          "bg-sidebar text-sidebar-foreground data-open:animate-in data-open:slide-in-from-left data-closed:animate-out data-closed:slide-out-to-left fixed inset-y-0 left-0 z-50 flex h-full w-72 max-w-[85vw] flex-col gap-6 overflow-hidden px-4 py-6 shadow-lg duration-200 outline-none",
           className,
         )}
         {...props}
