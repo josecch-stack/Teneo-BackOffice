@@ -1,8 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import {
   SUBSCRIPTION_STATUS_LABELS,
   SUBSCRIPTION_STATUS_BADGE_CLASS,
@@ -28,8 +27,7 @@ export interface SubscriptionRow {
   } | null;
 }
 
-const fmt = (value: string | null) =>
-  value ? format(new Date(value), "dd/MM/yyyy", { locale: es }) : "—";
+const fmt = (value: string | null) => (value ? formatDateCL(value) : "—");
 
 export const subscriptionColumns: ColumnDef<SubscriptionRow>[] = [
   {

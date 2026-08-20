@@ -1,8 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateTimeCL } from "@/lib/utils/date";
 import { NOTIFICATION_TYPE_LABELS } from "@/lib/utils/notification";
 import { Badge } from "@/components/ui/badge";
 
@@ -64,10 +63,7 @@ export const notificationColumns: ColumnDef<NotificationRow>[] = [
     id: "trigger_date",
     header: "Fecha",
     enableSorting: false,
-    cell: ({ row }) =>
-      format(new Date(row.original.trigger_date), "dd/MM/yyyy HH:mm", {
-        locale: es,
-      }),
+    cell: ({ row }) => formatDateTimeCL(row.original.trigger_date),
   },
   {
     id: "status",

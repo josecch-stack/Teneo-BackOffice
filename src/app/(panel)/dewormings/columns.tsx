@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { NextDoseBadge } from "@/components/next-dose-badge";
 
 export interface DewormingRow {
@@ -65,10 +64,7 @@ export const dewormingColumns: ColumnDef<DewormingRow>[] = [
     id: "application_date",
     accessorKey: "application_date",
     header: "Aplicación",
-    cell: ({ row }) =>
-      format(new Date(row.original.application_date), "dd/MM/yyyy", {
-        locale: es,
-      }),
+    cell: ({ row }) => formatDateCL(row.original.application_date),
   },
   {
     id: "next_dose_date",

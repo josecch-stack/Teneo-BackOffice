@@ -1,5 +1,5 @@
-import { format, isPast, differenceInCalendarDays } from "date-fns";
-import { es } from "date-fns/locale";
+import { isPast, differenceInCalendarDays } from "date-fns";
+import { formatDateCL } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
 
 export function NextDoseBadge({
@@ -10,7 +10,7 @@ export function NextDoseBadge({
   if (!nextDoseDate) return <span className="text-muted-foreground">—</span>;
   const date = new Date(nextDoseDate);
   const daysUntil = differenceInCalendarDays(date, new Date());
-  const label = format(date, "dd/MM/yyyy", { locale: es });
+  const label = formatDateCL(nextDoseDate);
 
   if (isPast(date) && daysUntil < 0) {
     return (

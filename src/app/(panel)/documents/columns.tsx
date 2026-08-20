@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { DOCUMENT_TYPE_LABELS } from "@/lib/utils/document";
 import { Badge } from "@/components/ui/badge";
 import { DocumentRowActions } from "./document-row-actions";
@@ -54,8 +53,7 @@ export function createDocumentColumns(
       id: "created_at",
       header: "Fecha",
       enableSorting: false,
-      cell: ({ row }) =>
-        format(new Date(row.original.created_at), "dd/MM/yyyy", { locale: es }),
+      cell: ({ row }) => formatDateCL(row.original.created_at),
     },
     {
       id: "actions",

@@ -1,8 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { SPECIES_OPTIONS } from "@/lib/validations/pet";
 
 export interface PetReportRow {
@@ -63,7 +62,6 @@ export const petsReportColumns: ColumnDef<PetReportRow>[] = [
     id: "created_at",
     header: "Registrado",
     enableSorting: false,
-    cell: ({ row }) =>
-      format(new Date(row.original.created_at), "dd/MM/yyyy", { locale: es }),
+    cell: ({ row }) => formatDateCL(row.original.created_at),
   },
 ];

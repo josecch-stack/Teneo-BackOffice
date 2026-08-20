@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { InitialsAvatar } from "@/components/initials-avatar";
 import { Badge } from "@/components/ui/badge";
 
@@ -93,8 +92,7 @@ export const ownerColumns: ColumnDef<OwnerRow>[] = [
     id: "created_at",
     accessorKey: "created_at",
     header: "Registrado",
-    cell: ({ row }) =>
-      format(new Date(row.original.created_at), "dd/MM/yyyy", { locale: es }),
+    cell: ({ row }) => formatDateCL(row.original.created_at),
   },
   {
     id: "pet_shares",

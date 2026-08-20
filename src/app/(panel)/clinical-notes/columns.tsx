@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { CLINICAL_EVENT_TYPE_LABELS } from "@/lib/validations/clinical-note";
 import { Badge } from "@/components/ui/badge";
 
@@ -26,8 +25,7 @@ export const clinicalNoteColumns: ColumnDef<ClinicalNoteRow>[] = [
     id: "event_date",
     accessorKey: "event_date",
     header: "Fecha",
-    cell: ({ row }) =>
-      format(new Date(row.original.event_date), "dd/MM/yyyy", { locale: es }),
+    cell: ({ row }) => formatDateCL(row.original.event_date),
   },
   {
     id: "pet",

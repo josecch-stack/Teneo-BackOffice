@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { listPetClinicalNotes } from "./actions";
 import { Label } from "@/components/ui/label";
 import {
@@ -36,7 +35,7 @@ export function ClinicalNoteSelect({
   }, [petId]);
 
   const label = (note: ClinicalNoteOption) =>
-    `${format(new Date(note.event_date), "dd/MM/yyyy", { locale: es })}${note.reason ? ` — ${note.reason}` : ""}`;
+    `${formatDateCL(note.event_date)}${note.reason ? ` — ${note.reason}` : ""}`;
 
   return (
     <div className="flex flex-col gap-2">

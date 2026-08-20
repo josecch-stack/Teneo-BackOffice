@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { NextDoseBadge } from "@/components/next-dose-badge";
 
 export interface VaccineRow {
@@ -69,9 +68,7 @@ export const vaccineColumns: ColumnDef<VaccineRow>[] = [
     header: "Aplicación",
     cell: ({ row }) =>
       row.original.application_date
-        ? format(new Date(row.original.application_date), "dd/MM/yyyy", {
-            locale: es,
-          })
+        ? formatDateCL(row.original.application_date)
         : "—",
   },
   {

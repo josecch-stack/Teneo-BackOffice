@@ -1,12 +1,19 @@
-/** Computes age from a birth date as { years, months }, relative to `now` (defaults to today). */
+/**
+ * Computes age from a birth date as { years, months }, relative to `now`
+ * (defaults to today). Uses UTC getters, not local-time ones: birth_date is
+ * a date-only Postgres column (parses as UTC midnight), and a "use client"
+ * caller renders once on the server (Railway, UTC) and once on hydration
+ * (visitor's browser, Chile) — local getters would read a different
+ * calendar day in each environment and hydration-mismatch.
+ */
 export function calculateAge(
   birthDate: Date,
   now: Date = new Date(),
 ): { years: number; months: number } {
-  let years = now.getFullYear() - birthDate.getFullYear();
-  let months = now.getMonth() - birthDate.getMonth();
+  let years = now.getUTCFullYear() - birthDate.getUTCFullYear();
+  let months = now.getUTCMonth() - birthDate.getUTCMonth();
 
-  if (now.getDate() < birthDate.getDate()) {
+  if (now.getUTCDate() < birthDate.getUTCDate()) {
     months -= 1;
   }
   if (months < 0) {

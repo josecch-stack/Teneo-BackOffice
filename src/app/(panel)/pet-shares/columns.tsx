@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
 
 export interface PetShareRow {
@@ -64,7 +63,6 @@ export const petShareColumns: ColumnDef<PetShareRow>[] = [
     id: "created_at",
     accessorKey: "created_at",
     header: "Invitado el",
-    cell: ({ row }) =>
-      format(new Date(row.original.created_at), "dd/MM/yyyy", { locale: es }),
+    cell: ({ row }) => formatDateCL(row.original.created_at),
   },
 ];

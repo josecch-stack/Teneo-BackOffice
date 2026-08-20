@@ -1,8 +1,7 @@
 "use client";
 
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateTimeCL } from "@/lib/utils/date";
 import { Badge } from "@/components/ui/badge";
 import { AUDIT_ACTION_LABELS, AUDIT_RESOURCE_LABELS } from "@/lib/utils/audit";
 import { ROLE_LABELS } from "@/lib/validations/panel-user";
@@ -31,9 +30,7 @@ export const auditColumns: ColumnDef<AuditLogRow>[] = [
     enableSorting: false,
     cell: ({ row }) => (
       <span className="text-muted-foreground whitespace-nowrap">
-        {format(new Date(row.original.created_at), "dd/MM/yyyy HH:mm", {
-          locale: es,
-        })}
+        {formatDateTimeCL(row.original.created_at)}
       </span>
     ),
   },

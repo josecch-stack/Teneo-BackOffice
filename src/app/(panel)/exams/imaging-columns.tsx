@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
-import { format } from "date-fns";
-import { es } from "date-fns/locale";
+import { formatDateCL } from "@/lib/utils/date";
 import { IMAGING_TYPE_LABELS } from "@/lib/validations/exam";
 
 export interface ImagingExamRow {
@@ -69,8 +68,7 @@ export const imagingExamColumns: ColumnDef<ImagingExamRow>[] = [
     id: "exam_date",
     accessorKey: "exam_date",
     header: "Fecha",
-    cell: ({ row }) =>
-      format(new Date(row.original.exam_date), "dd/MM/yyyy", { locale: es }),
+    cell: ({ row }) => formatDateCL(row.original.exam_date),
   },
   {
     id: "vet_center",
