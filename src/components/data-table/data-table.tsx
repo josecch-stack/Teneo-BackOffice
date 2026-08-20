@@ -99,16 +99,19 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="overflow-x-auto rounded-md border">
+      <div className="overflow-x-auto">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className="hover:bg-transparent">
                 {headerGroup.headers.map((header) => {
                   const sortable =
                     header.column.columnDef.enableSorting !== false;
                   return (
-                    <TableHead key={header.id}>
+                    <TableHead
+                      key={header.id}
+                      className="text-muted-foreground font-medium"
+                    >
                       {header.isPlaceholder ? null : sortable ? (
                         <Link
                           href={sortHref(header.column.id)}
@@ -123,7 +126,7 @@ export function DataTable<TData, TValue>({
                               {currentDir === "asc" ? "↑" : "↓"}
                             </span>
                           ) : (
-                            <ChevronsUpDown className="text-muted-foreground size-3" />
+                            <ChevronsUpDown className="size-3" />
                           )}
                         </Link>
                       ) : (
@@ -167,14 +170,11 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="text-muted-foreground flex flex-wrap items-center justify-between gap-3 text-sm">
-        <span>
-          {rowCount} resultado{rowCount === 1 ? "" : "s"}
-        </span>
         <div className="flex items-center gap-1">
           {page > 1 ? (
             <Link
               href={hrefWithParam("page", String(page - 1))}
-              className="hover:text-foreground px-2 py-1 font-medium"
+              className="text-primary px-2 py-1 font-medium hover:underline"
             >
               Anterior
             </Link>
@@ -195,7 +195,7 @@ export function DataTable<TData, TValue>({
                   "flex size-7 items-center justify-center rounded-full tabular-nums",
                   p === page
                     ? "bg-primary text-primary-foreground font-medium"
-                    : "hover:bg-muted",
+                    : "bg-primary/10 text-primary hover:bg-primary/20",
                 )}
               >
                 {p}
@@ -205,7 +205,7 @@ export function DataTable<TData, TValue>({
           {page < pageCount ? (
             <Link
               href={hrefWithParam("page", String(page + 1))}
-              className="hover:text-foreground px-2 py-1 font-medium"
+              className="text-primary px-2 py-1 font-medium hover:underline"
             >
               Siguiente
             </Link>
@@ -213,6 +213,9 @@ export function DataTable<TData, TValue>({
             <span className="px-2 py-1 opacity-40">Siguiente</span>
           )}
         </div>
+        <span>
+          {rowCount} resultado{rowCount === 1 ? "" : "s"}
+        </span>
       </div>
     </div>
   );
