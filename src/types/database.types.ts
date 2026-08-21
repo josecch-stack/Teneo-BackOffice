@@ -1115,6 +1115,13 @@ export interface Database {
           pet_id: string | null;
           source_module: string | null;
           source_id: string | null;
+          application_date: string | null;
+          next_dose_date: string | null;
+          has_prescription: boolean | null;
+          prescription_date: string | null;
+          next_checkup_date: string | null;
+          start_datetime: string | null;
+          end_datetime: string | null;
         };
         Relationships: [];
       };
