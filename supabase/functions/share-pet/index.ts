@@ -141,29 +141,45 @@ Deno.serve(async (req) => {
       (pet.owners as { first_name: string } | null)?.first_name ??
       "Un tutor de Teneo";
 
-    // Un solo INSERT, todas las filas a la vez: si el llamador no es el
-    // dueño real de la mascota, is_pet_owner(pet_id) en el WITH CHECK de la
-    // policy "Owners can create shares for own pets" rechaza el statement
-    // completo (ninguna fila queda insertada) — no hace falta duplicar esa
-    // validación acá.
-    const { error: shareError } = await supabase.from("pet_shares").insert(
-      recipients.map((email) => ({
+    // Un INSERT por destinatario, no un solo batch: `pet_shares` tiene
+    // `uq_pet_share` (UNIQUE pet_id, shared_with_email — del esquema
+    // original de la app, no algo agregado acá), así que re-compartir con
+    // un contacto ya compartido antes viola esa constraint. En un batch
+    // único eso hacía fallar el statement completo y bloqueaba también a
+    // los destinatarios nuevos y válidos del mismo request (bug real
+    // encontrado probando con el equipo de app). Acá se trata como algo
+    // normal — se reenvía el correo igual, solo no se duplica la fila.
+    //
+    // is_pet_owner(pet_id) en el WITH CHECK de "Owners can create shares
+    // for own pets" es el mismo para cualquier fila de esta mascota — si
+    // falla en el primer intento, corta altiro sin seguir probando el
+    // resto (no tiene sentido reintentar por cada destinatario).
+    const emailErrors = new Map<string, string>();
+    const toSend: string[] = [];
+    for (const email of recipients) {
+      const { error: insertError } = await supabase.from("pet_shares").insert({
         pet_id: petId,
         shared_by: user.id,
         shared_with_email: email,
-      })),
-    );
-    if (shareError) {
+      });
+      if (!insertError) {
+        toSend.push(email);
+        continue;
+      }
       const forbidden =
-        shareError.code === "42501" || shareError.code === "PGRST301";
-      return json(
-        {
-          error: forbidden
-            ? "No tienes permiso para compartir esta mascota."
-            : `No se pudo registrar el envío: ${shareError.message}`,
-        },
-        forbidden ? 403 : 500,
-      );
+        insertError.code === "42501" || insertError.code === "PGRST301";
+      if (forbidden) {
+        return json(
+          { error: "No tienes permiso para compartir esta mascota." },
+          403,
+        );
+      }
+      const alreadyShared = insertError.code === "23505";
+      if (alreadyShared) {
+        toSend.push(email); // ya compartida antes con este correo — se reenvía igual
+        continue;
+      }
+      emailErrors.set(email, insertError.message);
     }
 
     const subject = `${ownerFirstName} compartió el historial de ${pet.name} contigo`;
@@ -177,8 +193,8 @@ Deno.serve(async (req) => {
     `;
     const attachmentFilename = `${pet.name.replace(/[^a-zA-Z0-9-_]/g, "_")}-teneo.pdf`;
 
-    const results = await Promise.all(
-      recipients.map(async (email) => {
+    const sendResults = await Promise.all(
+      toSend.map(async (email) => {
         try {
           const res = await fetch("https://api.resend.com/emails", {
             method: "POST",
@@ -216,6 +232,14 @@ Deno.serve(async (req) => {
       }),
     );
 
+    const results = [
+      ...sendResults,
+      ...[...emailErrors].map(([email, error]) => ({
+        email,
+        sent: false,
+        error: `No se pudo registrar el envío: ${error}`,
+      })),
+    ];
     const sentCount = results.filter((r) => r.sent).length;
     return json({
       pet_name: pet.name,
