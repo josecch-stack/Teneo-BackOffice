@@ -1,5 +1,5 @@
 import { listOwners } from "./actions";
-import { ownerColumns, type OwnerRow } from "./columns";
+import { getOwnerColumns, type OwnerRow } from "./columns";
 import { verifySession, hasPermission } from "@/lib/auth/dal";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
@@ -9,14 +9,14 @@ import { ExportMenu } from "@/components/data-table/export-menu";
 
 const PLAN_TABS = [
   { value: "all", label: "Todos" },
-  { value: "subscribed", label: "Premium" },
-  { value: "Plus", label: "Plus" },
-  { value: "Pro", label: "Pro" },
+  { value: "free", label: "Free" },
+  { value: "premium", label: "Premium" },
 ];
 
 export default async function OwnersPage(props: PageProps<"/owners">) {
   const session = await verifySession();
   const canExport = hasPermission(session, "export:bulk");
+  const canWritePremium = hasPermission(session, "subscription:write");
 
   const searchParams = await props.searchParams;
   const q = typeof searchParams.q === "string" ? searchParams.q : undefined;
@@ -43,8 +43,7 @@ export default async function OwnersPage(props: PageProps<"/owners">) {
   const exportParams = new URLSearchParams({ type: "owners" });
   if (from) exportParams.set("from", from);
   if (to) exportParams.set("to", to);
-  if (plan === "subscribed") exportParams.set("subscription", "active");
-  else if (plan !== "all") exportParams.set("plan", plan);
+  if (plan === "premium") exportParams.set("subscription", "active");
 
   return (
     <div className="flex flex-col gap-4">
@@ -71,7 +70,7 @@ export default async function OwnersPage(props: PageProps<"/owners">) {
       </div>
 
       <DataTable
-        columns={ownerColumns}
+        columns={getOwnerColumns(canWritePremium)}
         data={rows as OwnerRow[]}
         page={page}
         pageCount={pageCount}

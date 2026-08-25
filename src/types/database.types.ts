@@ -1232,7 +1232,7 @@ export interface Database {
       species_type: "perro" | "gato" | "conejo" | "ave" | "reptil" | "otro";
       subscription_status:
         "active" | "cancelled" | "past_due" | "trialing" | "inactive";
-      subscription_payment_method: "apple" | "google" | "card";
+      subscription_payment_method: "apple" | "google" | "card" | "manual";
       subscription_billing_cycle: "monthly" | "annual";
       vaccine_application_type: "refuerzo" | "anual";
     };

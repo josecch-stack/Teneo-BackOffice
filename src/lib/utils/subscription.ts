@@ -27,6 +27,7 @@ export const SUBSCRIPTION_PAYMENT_METHOD_OPTIONS = [
   { value: "apple", label: "Apple Pay" },
   { value: "google", label: "Google Pay" },
   { value: "card", label: "Tarjeta de crédito" },
+  { value: "manual", label: "Otorgado manualmente" },
 ] as const;
 
 export const SUBSCRIPTION_PAYMENT_METHOD_LABELS: Record<string, string> =
