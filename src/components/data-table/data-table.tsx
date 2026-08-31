@@ -48,6 +48,16 @@ interface DataTableProps<TData, TValue> {
   pageCount: number;
   rowCount: number;
   emptyMessage?: string;
+  /**
+   * Extra context (e.g. a permission flag) a column's `cell` needs but that
+   * can't be baked into the column definition at construction time — column
+   * arrays must stay static, plain values (built once, module-level) since
+   * they're defined in a "use client" file and rendered from a Server
+   * Component; building them per-request on the server (a function call)
+   * produces fresh functions that React can't serialize across that
+   * boundary. Read via `table.options.meta` in a cell renderer instead.
+   */
+  meta?: Record<string, unknown>;
 }
 
 /**
@@ -63,6 +73,7 @@ export function DataTable<TData, TValue>({
   pageCount,
   rowCount,
   emptyMessage = "Sin resultados.",
+  meta,
 }: DataTableProps<TData, TValue>) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -70,6 +81,7 @@ export function DataTable<TData, TValue>({
   const table = useReactTable({
     data,
     columns,
+    meta,
     getCoreRowModel: getCoreRowModel(),
     manualPagination: true,
     manualSorting: true,

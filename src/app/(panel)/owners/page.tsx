@@ -1,5 +1,5 @@
 import { listOwners } from "./actions";
-import { getOwnerColumns, type OwnerRow } from "./columns";
+import { ownerColumns, type OwnerRow } from "./columns";
 import { verifySession, hasPermission } from "@/lib/auth/dal";
 import { DataTable } from "@/components/data-table/data-table";
 import { DataTableSearch } from "@/components/data-table/data-table-search";
@@ -70,12 +70,13 @@ export default async function OwnersPage(props: PageProps<"/owners">) {
       </div>
 
       <DataTable
-        columns={getOwnerColumns(canWritePremium)}
+        columns={ownerColumns}
         data={rows as OwnerRow[]}
         page={page}
         pageCount={pageCount}
         rowCount={rowCount}
         emptyMessage="No se encontraron tutores."
+        meta={{ canWritePremium }}
       />
     </div>
   );

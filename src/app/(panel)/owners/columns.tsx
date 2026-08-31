@@ -29,101 +29,103 @@ export interface OwnerRow {
   } | null;
 }
 
-export function getOwnerColumns(
-  canWritePremium: boolean,
-): ColumnDef<OwnerRow>[] {
-  return [
-    {
-      id: "first_name",
-      accessorKey: "first_name",
-      header: "Tutor",
-      cell: ({ row }) => {
-        const fullName =
-          `${row.original.first_name} ${row.original.last_name ?? ""}`.trim();
-        return (
-          <Link
-            href={`/owners/${row.original.user_id}`}
-            className="flex items-center gap-3"
-          >
-            <InitialsAvatar name={fullName} />
-            <span className="flex flex-col">
-              <span className="text-foreground font-bold">{fullName}</span>
-              {row.original.email && (
-                <span className="text-muted-foreground text-sm underline">
-                  {row.original.email}
-                </span>
-              )}
-            </span>
-          </Link>
-        );
-      },
+export const ownerColumns: ColumnDef<OwnerRow>[] = [
+  {
+    id: "first_name",
+    accessorKey: "first_name",
+    header: "Tutor",
+    cell: ({ row }) => {
+      const fullName =
+        `${row.original.first_name} ${row.original.last_name ?? ""}`.trim();
+      return (
+        <Link
+          href={`/owners/${row.original.user_id}`}
+          className="flex items-center gap-3"
+        >
+          <InitialsAvatar name={fullName} />
+          <span className="flex flex-col">
+            <span className="text-foreground font-bold">{fullName}</span>
+            {row.original.email && (
+              <span className="text-muted-foreground text-sm underline">
+                {row.original.email}
+              </span>
+            )}
+          </span>
+        </Link>
+      );
     },
-    {
-      id: "rut",
-      header: "RUT",
-      enableSorting: false,
-      cell: ({ row }) => row.original.rut ?? "—",
+  },
+  {
+    id: "rut",
+    header: "RUT",
+    enableSorting: false,
+    cell: ({ row }) => row.original.rut ?? "—",
+  },
+  {
+    id: "phone",
+    header: "Teléfono",
+    enableSorting: false,
+    cell: ({ row }) => row.original.phone ?? "—",
+  },
+  {
+    id: "commune",
+    header: "Comuna",
+    enableSorting: false,
+    cell: ({ row }) =>
+      row.original.communes?.name
+        ? `${row.original.communes.name}, ${row.original.regions?.name ?? ""}`
+        : "—",
+  },
+  {
+    id: "subscription",
+    header: "Suscripción",
+    enableSorting: false,
+    cell: ({ row }) => {
+      const sub = row.original.subscriptions;
+      return sub && sub.status === "active" ? (
+        <Badge className="bg-amber-500/10 text-amber-600">
+          {sub.plan_name}
+        </Badge>
+      ) : (
+        <span className="text-muted-foreground">Free</span>
+      );
     },
-    {
-      id: "phone",
-      header: "Teléfono",
-      enableSorting: false,
-      cell: ({ row }) => row.original.phone ?? "—",
-    },
-    {
-      id: "commune",
-      header: "Comuna",
-      enableSorting: false,
-      cell: ({ row }) =>
-        row.original.communes?.name
-          ? `${row.original.communes.name}, ${row.original.regions?.name ?? ""}`
-          : "—",
-    },
-    {
-      id: "subscription",
-      header: "Suscripción",
-      enableSorting: false,
-      cell: ({ row }) => {
-        const sub = row.original.subscriptions;
-        return sub && sub.status === "active" ? (
-          <Badge className="bg-amber-500/10 text-amber-600">
-            {sub.plan_name}
-          </Badge>
-        ) : (
-          <span className="text-muted-foreground">Free</span>
-        );
-      },
-    },
-    {
-      id: "premium",
-      header: "Premium",
-      enableSorting: false,
-      cell: ({ row }) => (
+  },
+  {
+    id: "premium",
+    header: "Premium",
+    enableSorting: false,
+    cell: ({ row, table }) => {
+      const canWritePremium = Boolean(
+        (table.options.meta as { canWritePremium?: boolean } | undefined)
+          ?.canWritePremium,
+      );
+      return (
         <PremiumToggle
           userId={row.original.user_id}
           premium={row.original.subscriptions?.status === "active"}
           disabled={!canWritePremium}
         />
-      ),
+      );
     },
-    {
-      id: "created_at",
-      accessorKey: "created_at",
-      header: "Registrado",
-      cell: ({ row }) => formatDateCL(row.original.created_at),
+  },
+  {
+    id: "created_at",
+    accessorKey: "created_at",
+    header: "Registrado",
+    cell: ({ row }) => formatDateCL(row.original.created_at),
+  },
+  {
+    id: "pet_shares",
+    header: "Comparte",
+    enableSorting: false,
+    cell: ({ row }) => {
+      const count = row.original.pet_shares?.[0]?.count ?? 0;
+      return count > 0 ? (
+        <Badge className="bg-primary/10 text-primary">{count}</Badge>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      );
     },
-    {
-      id: "pet_shares",
-      header: "Comparte",
-      enableSorting: false,
-      cell: ({ row }) => {
-        const count = row.original.pet_shares?.[0]?.count ?? 0;
-        return count > 0 ? (
-          <Badge className="bg-primary/10 text-primary">{count}</Badge>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        );
-      },
-    },
-  ];
-}
+  },
+];
