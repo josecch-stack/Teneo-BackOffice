@@ -48,6 +48,7 @@ export async function GET(
           "vaccine_name, application_type, application_date, next_dose_date, brand_lab, vet_name",
         )
         .eq("pet_id", id)
+        .eq("status", "applied")
         .is("deleted_at", null)
         .order("application_date", { ascending: false })
         .limit(8),
@@ -55,6 +56,7 @@ export async function GET(
         .from("dewormings")
         .select("product, type, application_date, next_dose_date")
         .eq("pet_id", id)
+        .eq("status", "applied")
         .is("deleted_at", null)
         .order("application_date", { ascending: false })
         .limit(5),

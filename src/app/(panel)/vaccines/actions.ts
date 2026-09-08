@@ -41,7 +41,7 @@ export async function listVaccines(params: ListVaccinesParams) {
   let query = supabase
     .from("vaccines")
     .select(
-      "id, vaccine_name, application_type, application_date, next_dose_date, brand_lab, vet_center, pets(id, name, species, owners(first_name, last_name))",
+      "id, vaccine_name, application_type, application_date, next_dose_date, status, brand_lab, vet_center, pets(id, name, species, owners(first_name, last_name))",
       { count: "exact" },
     )
     .is("deleted_at", null);

@@ -155,6 +155,7 @@ export interface Database {
           dosage: string | null;
           created_at: string;
           deleted_at: string | null;
+          status: Database["public"]["Enums"]["dose_status"];
         };
         Insert: {
           id?: string;
@@ -167,6 +168,7 @@ export interface Database {
           dosage?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          status?: Database["public"]["Enums"]["dose_status"];
         };
         Update: {
           id?: string;
@@ -179,6 +181,7 @@ export interface Database {
           dosage?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          status?: Database["public"]["Enums"]["dose_status"];
         };
         Relationships: [
           {
@@ -953,6 +956,7 @@ export interface Database {
           vaccine_catalog_id: number | null;
           lab_catalog_id: number | null;
           deleted_at: string | null;
+          status: Database["public"]["Enums"]["dose_status"];
         };
         Insert: {
           id?: string;
@@ -971,6 +975,7 @@ export interface Database {
           vaccine_catalog_id?: number | null;
           lab_catalog_id?: number | null;
           deleted_at?: string | null;
+          status?: Database["public"]["Enums"]["dose_status"];
         };
         Update: {
           id?: string;
@@ -989,6 +994,7 @@ export interface Database {
           vaccine_catalog_id?: number | null;
           lab_catalog_id?: number | null;
           deleted_at?: string | null;
+          status?: Database["public"]["Enums"]["dose_status"];
         };
         Relationships: [
           {
@@ -1189,6 +1195,7 @@ export interface Database {
           prescription_date: string | null;
           next_checkup_date: string | null;
           medications: Json | null;
+          status: Database["public"]["Enums"]["dose_status"] | null;
         };
         Relationships: [];
       };
@@ -1206,6 +1213,7 @@ export interface Database {
         | "otro";
       clinical_event_type: "consulta" | "examen" | "cirugia" | "otro";
       deworming_type: "interna" | "externa" | "mixta";
+      dose_status: "pending" | "applied" | "cancelled";
       exam_category:
         | "hemograma"
         | "perfil_bioquimico"

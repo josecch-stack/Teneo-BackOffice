@@ -18,15 +18,20 @@ export async function getExpiringVaccines({
   const limitDate = new Date();
   limitDate.setDate(limitDate.getDate() + withinDays);
 
+  // "Vencido o por vencer" ahora vive en las filas con status='pending' — su
+  // propia application_date ES la fecha comprometida (next_dose_date se deja
+  // null hasta que se aplique de verdad). Antes esto se inferí­a del
+  // next_dose_date de la última dosis aplicada; ese campo sigue existiendo
+  // mas es informativo, no la fuente de verdad de qué está pendiente.
   const query = supabase
     .from("vaccines")
     .select(
-      "id, vaccine_name, next_dose_date, pets(id, name, owner_id, owners(first_name, last_name, region_id, regions(name)))",
+      "id, vaccine_name, application_date, pets(id, name, owner_id, owners(first_name, last_name, region_id, regions(name)))",
     )
-    .not("next_dose_date", "is", null)
-    .lte("next_dose_date", limitDate.toISOString().slice(0, 10))
+    .eq("status", "pending")
+    .lte("application_date", limitDate.toISOString().slice(0, 10))
     .is("deleted_at", null)
-    .order("next_dose_date", { ascending: true })
+    .order("application_date", { ascending: true })
     .limit(100);
 
   const { data, error } = await query;
@@ -53,12 +58,12 @@ export async function getExpiringDewormings({
   const query = supabase
     .from("dewormings")
     .select(
-      "id, product, next_dose_date, pets(id, name, owner_id, owners(first_name, last_name, region_id, regions(name)))",
+      "id, product, application_date, pets(id, name, owner_id, owners(first_name, last_name, region_id, regions(name)))",
     )
-    .not("next_dose_date", "is", null)
-    .lte("next_dose_date", limitDate.toISOString().slice(0, 10))
+    .eq("status", "pending")
+    .lte("application_date", limitDate.toISOString().slice(0, 10))
     .is("deleted_at", null)
-    .order("next_dose_date", { ascending: true })
+    .order("application_date", { ascending: true })
     .limit(100);
 
   const { data, error } = await query;

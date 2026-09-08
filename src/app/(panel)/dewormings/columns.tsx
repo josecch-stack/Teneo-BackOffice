@@ -11,6 +11,7 @@ export interface DewormingRow {
   product: string;
   application_date: string;
   next_dose_date: string | null;
+  status: string | null;
   pets: {
     id: string;
     name: string;
@@ -71,7 +72,11 @@ export const dewormingColumns: ColumnDef<DewormingRow>[] = [
     accessorKey: "next_dose_date",
     header: "Próxima dosis",
     cell: ({ row }) => (
-      <NextDoseBadge nextDoseDate={row.original.next_dose_date} />
+      <NextDoseBadge
+        status={row.original.status}
+        applicationDate={row.original.application_date}
+        nextDoseDate={row.original.next_dose_date}
+      />
     ),
   },
 ];

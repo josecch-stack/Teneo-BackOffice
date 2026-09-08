@@ -65,7 +65,11 @@ export default async function VencimientosPage(
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <NextDoseBadge nextDoseDate={v.next_dose_date} />
+                    <NextDoseBadge
+                      status="pending"
+                      applicationDate={v.application_date}
+                      nextDoseDate={null}
+                    />
                     <Button
                       variant="outline"
                       size="sm"
@@ -114,7 +118,11 @@ export default async function VencimientosPage(
                     </span>
                   </div>
                   <div className="flex items-center gap-3">
-                    <NextDoseBadge nextDoseDate={d.next_dose_date} />
+                    <NextDoseBadge
+                      status="pending"
+                      applicationDate={d.application_date}
+                      nextDoseDate={null}
+                    />
                     <Button
                       variant="outline"
                       size="sm"

@@ -11,6 +11,7 @@ export interface VaccineRow {
   application_type: string | null;
   application_date: string | null;
   next_dose_date: string | null;
+  status: string | null;
   brand_lab: string | null;
   vet_center: string | null;
   pets: {
@@ -76,7 +77,11 @@ export const vaccineColumns: ColumnDef<VaccineRow>[] = [
     accessorKey: "next_dose_date",
     header: "Próxima dosis",
     cell: ({ row }) => (
-      <NextDoseBadge nextDoseDate={row.original.next_dose_date} />
+      <NextDoseBadge
+        status={row.original.status}
+        applicationDate={row.original.application_date}
+        nextDoseDate={row.original.next_dose_date}
+      />
     ),
   },
   {

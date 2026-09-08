@@ -36,7 +36,7 @@ export async function listDewormings(params: ListDewormingsParams) {
   let query = supabase
     .from("dewormings")
     .select(
-      "id, type, product, application_date, next_dose_date, pets(id, name, owners(first_name, last_name))",
+      "id, type, product, application_date, next_dose_date, status, pets(id, name, owners(first_name, last_name))",
       {
         count: "exact",
       },
