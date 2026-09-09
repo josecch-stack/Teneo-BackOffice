@@ -234,10 +234,27 @@ Deno.serve(async () => {
         if (res.ok) {
           deliveredToAtLeastOne = true;
         } else {
+          const body = await res.text();
           console.error(
             `FCM send failed for notification ${n.id}, token ${token}:`,
-            await res.text(),
+            body,
           );
+
+          // 404 en este endpoint específico de FCM significa que el token
+          // ya no corresponde a ninguna instalación real (app desinstalada,
+          // token rotado) — nunca va a funcionar, así que se borra acá para
+          // que no se siga reintentando (y fallando) todos los días. Otros
+          // códigos (401/403/429/5xx) son transitorios o de configuración,
+          // no del token en sí, así que no se tocan.
+          if (res.status === 404) {
+            await Promise.all([
+              supabase
+                .from("owners")
+                .update({ fcm_token: null })
+                .eq("fcm_token", token),
+              supabase.from("push_devices").delete().eq("fcm_token", token),
+            ]);
+          }
         }
       }
 
