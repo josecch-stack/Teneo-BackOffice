@@ -38,7 +38,7 @@ export async function listPets(params: ListPetsParams) {
   let query = supabase
     .from("pets")
     .select(
-      "id, name, species, custom_species, breed, birth_date, chip_number, profile_photo_url, created_at, owners(user_id, first_name, last_name)",
+      "id, name, species, custom_species, breed, birth_date, chip_number, profile_photo_url, created_at, deceased_at, owners(user_id, first_name, last_name)",
       {
         count: "exact",
       },

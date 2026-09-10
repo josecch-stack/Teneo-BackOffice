@@ -28,6 +28,7 @@ interface LabExamFormProps {
     sample_date: string | null;
     result_date: string;
     lab_center: string | null;
+    veterinarian: string | null;
     summary: string | null;
     pets: {
       id: string;
@@ -136,14 +137,25 @@ export function LabExamForm({
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <Label htmlFor="lab_center">Laboratorio</Label>
-        <Input
-          id="lab_center"
-          name="lab_center"
-          defaultValue={labExam?.lab_center ?? ""}
-          disabled={pending}
-        />
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="lab_center">Laboratorio</Label>
+          <Input
+            id="lab_center"
+            name="lab_center"
+            defaultValue={labExam?.lab_center ?? ""}
+            disabled={pending}
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="veterinarian">Médico veterinario</Label>
+          <Input
+            id="veterinarian"
+            name="veterinarian"
+            defaultValue={labExam?.veterinarian ?? ""}
+            disabled={pending}
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-2">

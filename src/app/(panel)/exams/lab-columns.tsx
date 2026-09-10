@@ -12,6 +12,7 @@ export interface LabExamRow {
   sample_date: string | null;
   result_date: string;
   lab_center: string | null;
+  veterinarian: string | null;
   pets: {
     id: string;
     name: string;
@@ -76,5 +77,11 @@ export const labExamColumns: ColumnDef<LabExamRow>[] = [
     header: "Laboratorio",
     enableSorting: false,
     cell: ({ row }) => row.original.lab_center ?? "—",
+  },
+  {
+    id: "veterinarian",
+    header: "Veterinario",
+    enableSorting: false,
+    cell: ({ row }) => row.original.veterinarian ?? "—",
   },
 ];

@@ -6,6 +6,7 @@ import { formatDateCL } from "@/lib/utils/date";
 import { formatAge } from "@/lib/utils/age";
 import { SPECIES_OPTIONS } from "@/lib/validations/pet";
 import { InitialsAvatar } from "@/components/initials-avatar";
+import { Badge } from "@/components/ui/badge";
 
 export interface PetRow {
   id: string;
@@ -17,6 +18,7 @@ export interface PetRow {
   chip_number: string | null;
   profile_photo_url: string | null;
   created_at: string;
+  deceased_at: string | null;
   owners: {
     user_id: string;
     first_name: string;
@@ -44,6 +46,14 @@ export const petColumns: ColumnDef<PetRow>[] = [
           imageUrl={row.original.profile_photo_url}
         />
         <span className="text-foreground font-bold">{row.original.name}</span>
+        {row.original.deceased_at && (
+          <Badge
+            variant="outline"
+            className="text-muted-foreground font-normal"
+          >
+            En memoria
+          </Badge>
+        )}
       </Link>
     ),
   },

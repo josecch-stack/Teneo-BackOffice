@@ -44,6 +44,7 @@ export const labExamFormSchema = z
     sample_date: z.string().optional(),
     result_date: z.string().min(1, "La fecha de resultado es obligatoria."),
     lab_center: z.string().trim().optional(),
+    veterinarian: z.string().trim().optional(),
     summary: z.string().trim().optional(),
   })
   .refine((data) => data.result_date <= todayISO(), {

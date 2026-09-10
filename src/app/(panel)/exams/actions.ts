@@ -38,7 +38,7 @@ export async function listLabExams(params: ListExamsParams) {
   let query = supabase
     .from("lab_exams")
     .select(
-      "id, exam_name, category, sample_date, result_date, lab_center, pets(id, name, owners(first_name, last_name))",
+      "id, exam_name, category, sample_date, result_date, lab_center, veterinarian, pets(id, name, owners(first_name, last_name))",
       { count: "exact" },
     )
     .is("deleted_at", null);
@@ -224,6 +224,7 @@ function parseLabExamFormData(formData: FormData) {
     sample_date: str("sample_date"),
     result_date: str("result_date"),
     lab_center: str("lab_center"),
+    veterinarian: str("veterinarian"),
     summary: str("summary"),
   });
 }
@@ -256,6 +257,7 @@ export async function createLabExam(
       sample_date: v.sample_date || null,
       result_date: v.result_date,
       lab_center: v.lab_center || null,
+      veterinarian: v.veterinarian || null,
       summary: v.summary || null,
     })
     .select("id")
@@ -328,6 +330,7 @@ export async function updateLabExam(
       sample_date: v.sample_date || null,
       result_date: v.result_date,
       lab_center: v.lab_center || null,
+      veterinarian: v.veterinarian || null,
       summary: v.summary || null,
     })
     .eq("id", id)
@@ -345,15 +348,13 @@ export async function updateLabExam(
     if (pet) {
       try {
         const uploaded = await uploadExamFiles(pet.owner_id, v.pet_id, files);
-        await supabase
-          .from("lab_exam_files")
-          .insert(
-            uploaded.map((u) => ({
-              lab_exam_id: id,
-              file_url: u.file_url,
-              file_name: u.file_name,
-            })),
-          );
+        await supabase.from("lab_exam_files").insert(
+          uploaded.map((u) => ({
+            lab_exam_id: id,
+            file_url: u.file_url,
+            file_name: u.file_name,
+          })),
+        );
       } catch (e) {
         return {
           error:
@@ -505,15 +506,13 @@ export async function updateImagingExam(
     if (pet) {
       try {
         const uploaded = await uploadExamFiles(pet.owner_id, v.pet_id, files);
-        await supabase
-          .from("imaging_exam_files")
-          .insert(
-            uploaded.map((u) => ({
-              imaging_exam_id: id,
-              file_url: u.file_url,
-              file_name: u.file_name,
-            })),
-          );
+        await supabase.from("imaging_exam_files").insert(
+          uploaded.map((u) => ({
+            imaging_exam_id: id,
+            file_url: u.file_url,
+            file_name: u.file_name,
+          })),
+        );
       } catch (e) {
         return {
           error:
