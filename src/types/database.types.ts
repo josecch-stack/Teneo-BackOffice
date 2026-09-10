@@ -339,6 +339,7 @@ export interface Database {
           summary: string | null;
           created_at: string;
           deleted_at: string | null;
+          veterinarian: string | null;
         };
         Insert: {
           id?: string;
@@ -352,6 +353,7 @@ export interface Database {
           summary?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          veterinarian?: string | null;
         };
         Update: {
           id?: string;
@@ -365,6 +367,7 @@ export interface Database {
           summary?: string | null;
           created_at?: string;
           deleted_at?: string | null;
+          veterinarian?: string | null;
         };
         Relationships: [
           {
@@ -704,6 +707,7 @@ export interface Database {
           created_at: string;
           updated_at: string;
           deleted_at: string | null;
+          deceased_at: string | null;
         };
         Insert: {
           id?: string;
@@ -726,6 +730,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
+          deceased_at?: string | null;
         };
         Update: {
           id?: string;
@@ -748,6 +753,7 @@ export interface Database {
           created_at?: string;
           updated_at?: string;
           deleted_at?: string | null;
+          deceased_at?: string | null;
         };
         Relationships: [
           {
@@ -870,6 +876,11 @@ export interface Database {
             Database["public"]["Enums"]["subscription_billing_cycle"] | null;
           created_at: string;
           updated_at: string;
+          product_id: string | null;
+          purchase_token: string | null;
+          order_id: string | null;
+          transaction_id: string | null;
+          original_transaction_id: string | null;
         };
         Insert: {
           id?: string;
@@ -887,6 +898,11 @@ export interface Database {
             Database["public"]["Enums"]["subscription_billing_cycle"] | null;
           created_at?: string;
           updated_at?: string;
+          product_id?: string | null;
+          purchase_token?: string | null;
+          order_id?: string | null;
+          transaction_id?: string | null;
+          original_transaction_id?: string | null;
         };
         Update: {
           id?: string;
@@ -904,6 +920,11 @@ export interface Database {
             Database["public"]["Enums"]["subscription_billing_cycle"] | null;
           created_at?: string;
           updated_at?: string;
+          product_id?: string | null;
+          purchase_token?: string | null;
+          order_id?: string | null;
+          transaction_id?: string | null;
+          original_transaction_id?: string | null;
         };
         Relationships: [
           {
@@ -1030,15 +1051,6 @@ export interface Database {
         };
         Returns: string;
       };
-      calculate_next_vaccine_dose: {
-        Args: {
-          p_species: Database["public"]["Enums"]["species_type"] | null;
-          p_application_type:
-            Database["public"]["Enums"]["vaccine_application_type"] | null;
-          p_application_date: string | null;
-        };
-        Returns: string;
-      };
       can_view_pet: {
         Args: {
           p_pet_id: string | null;
@@ -1128,6 +1140,9 @@ export interface Database {
           next_checkup_date: string | null;
           start_datetime: string | null;
           end_datetime: string | null;
+          location: string | null;
+          dosage: string | null;
+          frequency_hours: number | null;
         };
         Relationships: [];
       };
